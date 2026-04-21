@@ -1,0 +1,30 @@
+<div class="p-4">
+    {# TÍTULO DE LA MARCA #}
+    <h3 class="fw-bold text-white mb-4">VETERIOS<span style="color: #17a2b8;">Admin</span></h3>
+
+    <div class="nav flex-column nav-pills gap-2">
+        {# RESUMEN / DASHBOARD #}
+        <a href="{% url 'dashboard_admin' %}" 
+           class="nav-link text-white d-flex align-items-center py-3 {% if request.resolver_match.url_name == 'dashboard_admin' %}active{% endif %}">
+            <i class="bi bi-grid-1x2-fill me-3"></i> Resumen
+        </a>
+
+        {# GESTIÓN DE CITAS #}
+        <a href="{% url 'gestion_citas' %}" 
+           class="nav-link text-white d-flex align-items-center py-3 {% if request.resolver_match.url_name == 'gestion_citas' %}active{% endif %}">
+            <i class="bi bi-calendar-check me-3"></i> Citas Clientes
+        </a>
+
+        {# LISTA DE VETERINARIOS #}
+        <a href="{% url 'lista_veterinarios' %}" 
+           class="nav-link text-white d-flex align-items-center py-3 {% if request.resolver_match.url_name == 'lista_veterinarios' %}active{% endif %}">
+            <i class="bi bi-person-badge me-3"></i> Veterinarios
+        </a>
+
+        {# SEGUIMIENTOS (PACIENTES POR VOLVER) #}
+        <a href="{% url 'pacientes_porvolver' %}" 
+           class="nav-link text-white d-flex align-items-center py-3 {% if request.resolver_match.url_name == 'pacientes_porvolver' %}active{% endif %}">
+            <i class="bi bi-telephone-outbound me-3"></i> Seguimientos
+        </a>
+    </div>
+</div>

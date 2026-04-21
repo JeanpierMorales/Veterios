@@ -1,0 +1,149 @@
+{% extends 'aplicacioncurso/shared/base_admin.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+
+<div class="container-fluid py-4 px-2 px-lg-5">
+    {# CABECERA: BIENVENIDA DINÁMICA #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold d-flex align-items-center" style="color: #111b27;">
+                Bienvenido, Administrador <span class="ms-2 fs-4">👋</span>
+            </h2>
+            <p class="text-muted">Resumen general de las operaciones de hoy en <span class="fw-bold text-info">VetCare</span>.</p>
+        </div>
+    </div>
+
+    {# FILA DE ESTADÍSTICAS #}
+    <div class="row g-4 mb-5">
+        {# Tarjeta Citas de Hoy #}
+        <div class="col-md-4">
+            <div class="card card-stat shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-body p-4 text-white gradient-blue d-flex flex-column justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 fw-bold mb-1 small">Citas para Hoy</h6>
+                            <h2 class="fw-bold mb-0">{{ citas_hoy }}</h2>
+                        </div>
+                        <div class="stat-icon-box">
+                            <i class="bi bi-calendar-check fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Tarjeta Pendientes de Asignación #}
+        <div class="col-md-4">
+            <div class="card card-stat shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-body p-4 text-white gradient-orange d-flex flex-column justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 fw-bold mb-1 small">Pendientes de Asignar</h6>
+                            <h2 class="fw-bold mb-0">{{ citas_pendientes }}</h2>
+                        </div>
+                        <div class="stat-icon-box">
+                            <i class="bi bi-clock-history fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Tarjeta Total de Mascotas #}
+        <div class="col-md-4">
+            <div class="card card-stat shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-body p-4 text-white gradient-green d-flex flex-column justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 fw-bold mb-1 small">Mascotas Totales</h6>
+                            <h2 class="fw-bold mb-0">{{ total_mascotas }}</h2>
+                        </div>
+                        <div class="stat-icon-box">
+                            <i class="bi bi-paw fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# COLUMNA IZQUIERDA: ACCIONES PRINCIPALES #}
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 border-top border-4" style="border-top-color: #17a2b8 !important;">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-info-subtle text-info rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                        <i class="bi bi-lightning-charge-fill fs-4 text-info"></i>
+                    </div>
+                    <h5 class="fw-bold m-0 text-dark">Acciones Prioritarias</h5>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <a href="{% url 'gestion_citas' %}" class="action-btn-dashboard p-3 rounded-4 d-flex justify-content-between align-items-center shadow-sm text-decoration-none">
+                        <div class="d-flex align-items-center">
+                            <div class="action-icon bg-dark text-white me-3">
+                                <i class="bi bi-clipboard-pulse fs-5"></i>
+                            </div>
+                            <div>
+                                <span class="d-block fw-bold text-dark">Revisar y asignar veterinarios</span>
+                                <small class="text-muted">Confirmar solicitudes pendientes</small>
+                            </div>
+                        </div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+
+                    <a href="{% url 'lista_veterinarios' %}" class="action-btn-dashboard p-3 rounded-4 d-flex justify-content-between align-items-center shadow-sm text-decoration-none">
+                        <div class="d-flex align-items-center">
+                            <div class="action-icon bg-dark text-white me-3">
+                                <i class="bi bi-person-plus-fill fs-5"></i>
+                            </div>
+                            <div>
+                                <span class="d-block fw-bold text-dark">Gestionar equipo médico</span>
+                                <small class="text-muted">Dar de alta o editar doctores</small>
+                            </div>
+                        </div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# COLUMNA DERECHA: ESTADO TÉCNICO DINÁMICO #}
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-dark text-white h-100 shadow-lg d-flex flex-column">
+                <h6 class="fw-bold text-info mb-3">Estado del Sistema</h6>
+
+                {# Indicador de Servidor #}
+                <div class="d-flex align-items-center mb-3">
+                    <div class="{% if app_activa %}bg-success{% else %}bg-danger{% endif %} rounded-circle me-2" style="width: 10px; height: 10px;"></div>
+                    <small class="fw-bold">
+                        {% if app_activa %}Servidores Activos{% else %}Servidores Inactivos{% endif %}
+                    </small>
+                </div>
+
+                <hr class="border-secondary opacity-25">
+
+                <p class="small text-white-50 flex-grow-1">
+                    Las citas se actualizan automáticamente cada vez que un cliente realiza una solicitud desde el portal principal.
+                </p>
+
+                {# Bloque de notas técnicas #}
+                <div class="mt-auto p-3 bg-secondary bg-opacity-25 rounded-3 border border-secondary border-opacity-25">
+                    <small class="text-info d-block fw-bold mb-1">Nota técnica:</small>
+
+                    <small class="d-block">
+                        Base de Datos:
+                        <span class="{% if db_online %}text-success{% else %}text-danger{% endif %} fw-bold">
+                            {% if db_online %}Online{% else %}Offline{% endif %}
+                        </span>
+                    </small>
+
+                    <small class="text-white-50 d-block">Servicios Internos: <span class="text-success">Activos</span></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

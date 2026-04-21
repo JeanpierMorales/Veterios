@@ -1,0 +1,115 @@
+{% extends 'aplicacioncurso/shared/base_admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4 px-2 px-lg-5">
+    {# CABECERA #}
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold text-dark m-0">Equipo Médico</h2>
+            <p class="text-muted m-0">Personal de la clínica <span class="fw-bold text-info">VetCare</span>.</p>
+        </div>
+        
+        <button class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalRegistro">
+            <i class="bi bi-plus-lg me-2"></i> Nuevo Médico
+        </button>
+    </div>
+
+    {# MENSAJE DE ÉXITO (SweetAlert) #}
+    {% if messages %}
+        {% for message in messages %}
+            {% if 'registro_exitoso' in message.tags %}
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                Swal.fire({
+                    title: '¡Registro Exitoso!',
+                    text: 'Se asignó tu veterinario con éxito',
+                    icon: 'success',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3e929a',
+                    customClass: {
+                        popup: 'rounded-4 border-0 shadow-lg',
+                        confirmButton: 'rounded-pill px-4 fw-bold'
+                    }
+                });
+            </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="row g-4">
+        {% for v in veterinarios %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card vet-card border-0 shadow-sm rounded-4 p-3 h-100 {% if not v.esta_activo %}opacity-75 bg-light{% endif %}">
+                <div class="card-body p-2">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box-vet me-3 shadow-sm bg-white text-primary rounded-3 p-3" style="background: #17a2b8 !important; color: white !important;">
+                            <i class="bi bi-person-vcard-fill fs-3"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h5 class="fw-bold mb-1 text-dark">{{ v.nombre }}</h5>
+                            <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3 border border-info border-opacity-25">
+                                {{ v.especialidad }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {# CREDENCIALES SUGERIDAS #}
+                    <div class="bg-white bg-opacity-50 rounded-3 p-2 mb-3 border border-dashed text-muted" style="font-size: 0.85rem;">
+                        {# El filtro 'cut' quita espacios y 'lower' lo pone en minúsculas #}
+                        <div><strong>User:</strong> {{ v.nombre|cut:" "|lower }}@veterios.com</div>
+                        <div><strong>Pass:</strong> Veterios2026*</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge {% if v.esta_activo %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %} border rounded-pill px-3">
+                            {% if v.esta_activo %}Activo{% else %}Inactivo{% endif %}
+                        </span>
+                        
+                        <form action="{% url 'cambiar_estado_veterinario' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ v.id }}" />
+                            <button type="submit" class="btn btn-sm {% if v.esta_activo %}btn-outline-danger{% else %}btn-outline-success{% endif %} rounded-pill">
+                                {% if v.esta_activo %}Inhabilitar{% else %}Habilitar{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">No hay médicos registrados aún.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{# MODAL REGISTRO #}
+<div class="modal fade" id="modalRegistro" tabindex="-1" aria-labelledby="modalRegistroLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h5 class="fw-bold" id="modalRegistroLabel">Registrar Nuevo Médico</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'registrar_veterinario' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Nombre Completo</label>
+                        <input type="text" name="nombre" class="form-control bg-light border-0 p-3" placeholder="Ej: Dr. Alejandro Cáceres" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Especialidad</label>
+                        <input type="text" name="especialidad" class="form-control bg-light border-0 p-3" placeholder="Ej: Cirugía" required />
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow">Guardar y Crear Acceso</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

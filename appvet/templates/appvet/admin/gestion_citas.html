@@ -1,0 +1,140 @@
+{% extends 'aplicacioncurso/shared/base_admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4 px-5">
+    {# CABECERA #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color: #2c3e50;">Citas Entrantes</h2>
+        <span class="badge bg-primary rounded-pill px-3 py-2">Total: {{ citas|length }}</span>
+    </div>
+
+    {# TABLA DE CITAS #}
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th class="ps-4">Prioridad</th>
+                    <th>Mascota</th>
+                    <th>Servicio</th>
+                    <th>Horario</th>
+                    <th>Veterinario</th>
+                    <th>Estado</th>
+                    <th class="pe-4 text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    <td class="ps-4">
+                        {% if cita.prioridad == "Alta" %}
+                            <span class="badge rounded-pill bg-danger text-white"><i class="bi bi-exclamation-triangle-fill"></i> ALTA</span>
+                        {% elif cita.prioridad == "Media" %}
+                            <span class="badge rounded-pill bg-warning text-dark"><i class="bi bi-clock-history"></i> MEDIA</span>
+                        {% else %}
+                            <span class="badge rounded-pill bg-success"><i class="bi bi-shield-check"></i> BAJA</span>
+                        {% endif %}
+                    </td>
+                    <td class="fw-bold">{{ cita.mascota.nombre }}</td>
+                    <td>{{ cita.servicio }}</td>
+                    <td>{{ cita.fecha|date:"d/m/Y" }} <br><small class="text-muted">{{ cita.horario }}</small></td>
+                    <td>{{ cita.veterinario.nombre|default:"Pendiente" }}</td>
+                    <td>
+                        <span class="badge rounded-pill {% if cita.estado == 'Pendiente' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                            {{ cita.estado }}
+                        </span>
+                    </td>
+                    <td class="pe-4 text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            {% if cita.estado != "Completada" %}
+                                <button class="btn btn-sm btn-info text-white rounded-circle"
+                                        onclick="abrirModalAsignar('{{ cita.id }}')" title="Asignar/Cambiar Médico">
+                                    <i class="bi bi-person-plus-fill"></i>
+                                </button>
+                            {% endif %}
+
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-circle"
+                                    onclick="confirmarEliminar('{{ cita.id }}')" title="Eliminar Cita">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">No hay citas registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# MODAL ASIGNAR #}
+<div class="modal fade" id="modalAsignar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h5 class="fw-bold">Asignar Médico Veterinario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'asignar_veterinario' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <input type="hidden" name="cita_id" id="citaIdInput" />
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Seleccionar Especialista</label>
+                        <select name="veterinario_id" class="form-select bg-light border-0 p-3 rounded-3" required>
+                            <option value="">-- Seleccione un médico --</option>
+                            {% for vete in veterinarios %}
+                                <option value="{{ vete.id }}">{{ vete.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-3 rounded-3 shadow-sm">Confirmar y Notificar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# SCRIPTS #}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function abrirModalAsignar(id) {
+        document.getElementById('citaIdInput').value = id;
+        var modalElement = document.getElementById('modalAsignar');
+        var instanciaModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        instanciaModal.show();
+    }
+
+    function confirmarEliminar(id) {
+        Swal.fire({
+            title: '¿Eliminar cita?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3e929a',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // En Django las eliminaciones seguras suelen ir por POST
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{% url 'eliminar_cita' 0 %}".replace('0', id);
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = '{{ csrf_token }}';
+                form.appendChild(csrfInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+</script>
+{% endblock %}
