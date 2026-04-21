@@ -13,7 +13,7 @@ Desarrollo de una aplicación web integral diseñada para la optimización de pr
 Este proyecto es desarrollado por estudiantes del **7mo ciclo de Ingeniería de Software** en la **Universidad San Ignacio de Loyola (USIL)**:
 
 1. **Alondra Yamileth Gonzales** – *Desarrolladora (Rama: develop)*
-2. **Nombre del Estudiante 2** – *Rol / Responsabilidad*
+2. **Omar Jean Piere Morales Silva** – *Desarrollador / Responsabilidad*
 3. **Nombre del Estudiante 3** – *Rol / Responsabilidad*
 4. **Nombre del Estudiante 4** – *Rol / Responsabilidad*
 
