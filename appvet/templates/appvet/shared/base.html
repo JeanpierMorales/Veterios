@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VetCare - {% block title %}{{ title }}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}" />
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm" style="background-color: #3e929a; padding: 10px 40px; border-bottom: 2px solid rgba(0,0,0,0.05);">
+            <div class="container-fluid p-0">
+                <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                    <img src="{% static 'img/logovetcare.png' %}" alt="VetCare Logo" style="height: 100px; width: auto; object-fit: contain;">
+                </a>
+
+                <div class="d-flex flex-grow-1 ms-4">
+                    <h1 class="text-white m-0 fw-bold" style="font-size: 2.5rem; letter-spacing: -1px;">Descubre con nosotros</h1>
+                </div>
+
+                <div class="navbar-nav align-items-center gap-3">
+                    {# Enlace a Quienes Somos #}
+                    <a class="btn-nav-figma text-decoration-none" href="{% url 'quienes_somos' %}">Quiénes somos</a>
+
+                    {# Enlace a Ofertas #}
+                    <a class="btn-nav-figma text-decoration-none" href="{% url 'ofertas' %}" style="color: #ff9f43 !important;">Ofertas actuales</a>
+
+                    <a class="btn btn-naranja-figma px-4 fw-bold" href="{% url 'login' %}">Iniciar sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script src="{% static 'lib/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/site.js' %}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

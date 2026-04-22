@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}VETERIOS Admin{% endblock %}</title>
+
+    {# CSS EXTERNOS Y BOOTSTRAP #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    {# TUS ESTILOS PERSONALIZADOS #}
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}" />
+    
+    {# LIBRERÍAS DE JS (CABECERA) #}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* Estilo para resaltar el botón de seguimiento */
+        .nav-admin-link i.text-warning {
+            color: #ffc107 !important;
+        }
+
+        /* Animación para alertas en el dashboard */
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .pulse-warning {
+            animation: pulse-red 2s infinite;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="admin-container">
+        
+        {# --- CONEXIÓN CON SIDEBAR_ADMIN --- #}
+        <nav id="sidebar">
+            {% include 'appvet/shared/sidebar_admin.html' %}
+        </nav>
+
+        <div class="d-flex flex-column w-100">
+            {# CABECERA SUPERIOR #}
+            <header class="premium-header d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
+                <div class="d-flex align-items-center">
+                    <button id="toggleBtn" class="btn btn-dark border-0 shadow-sm me-4">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <h5 class="fw-bold text-dark m-0">{% block header_title %}Panel de Control{% endblock %}</h5>
+                </div>
+
+                <div class="user-profile d-flex align-items-center bg-white border rounded-pill px-3 py-1 shadow-sm">
+                    <div class="me-3 text-end d-none d-sm-block">
+                        <p class="m-0 small fw-bold text-dark">{{ user.username }}</p>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.65rem;">ADMINISTRADOR</span>
+                    </div>
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                        <i class="bi bi-person-fill fs-5"></i>
+                    </div>
+                </div>
+            </header>
+
+            {# CONTENIDO PRINCIPAL #}
+            <main class="p-4">
+                {% block content %}
+                {# Aquí se inyectarán las vistas como dashboard, lista de veterinarios, etc. #}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    {# SCRIPTS DE LIBRERÍAS (FUNDAMENTAL CARGAR JQUERY ANTES) #}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {# TUS SCRIPTS PERSONALIZADOS #}
+    <script src="{% static 'js/admin_actions.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,202 @@
+    
+:root {
+    --turquesa: #3e929a;
+    --naranja: #e67e22;
+    --celeste-hover: #e0f4f6;
+    --sidebar-w: 280px;
+    --sidebar-collapsed: 85px;
+    --header-h: 80px;
+}
+
+html, body {
+    overflow-x: hidden;
+    background-color: #f4f7f6;
+    height: 100%;
+}
+
+.main-dashboard {
+    display: flex;
+    min-height: 100vh;
+}
+
+/*  SIDEBAR */
+.sidebar {
+    width: var(--sidebar-w);
+    background-color: var(--turquesa);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1100;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-logo-container {
+    padding: 40px 10px;
+    text-align: center;
+    min-height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-logo-big {
+    width: 300px;
+    max-width: 110%;
+    height: auto;
+    transition: transform 0.3s;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 20px 55px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    position: relative;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+    .nav-item:hover {
+        background-color: var(--celeste-hover);
+        color: var(--turquesa) !important;
+    }
+
+    .nav-item.active {
+        color: var(--naranja) !important;
+        font-weight: bold;
+    }
+
+.active-indicator {
+    position: absolute;
+    left: 0;
+    width: 8px;
+    height: 50px;
+    background-color: var(--naranja);
+    border-radius: 0 10px 10px 0;
+    display: none;
+}
+
+.nav-item.active .active-indicator {
+    display: block;
+}
+
+/* CONTENIDO Y HEADER */
+.content-wrapper {
+    flex-grow: 1;
+    margin-left: var(--sidebar-w);
+    width: calc(100% - var(--sidebar-w));
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-header {
+    background-color: var(--turquesa);
+    height: var(--header-h);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.profile-avatar-container {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+
+/* ESTADOS COLAPSADOS */
+
+.sidebar-collapsed .sidebar {
+    width: var(--sidebar-collapsed);
+}
+
+.sidebar-collapsed .content-wrapper {
+    margin-left: var(--sidebar-collapsed);
+    width: calc(100% - var(--sidebar-collapsed));
+}
+
+
+.sidebar-collapsed .nav-item {
+    padding: 16px 0 !important;
+    justify-content: center;
+}
+
+    .sidebar-collapsed .nav-item i {
+        margin: 0 !important; 
+        font-size: 1.6rem; 
+    }
+
+
+.sidebar-collapsed .nav-text,
+.sidebar-collapsed .sidebar-logo-big {
+    display: none;
+}
+
+
+.sidebar-collapsed .sidebar-logo-container {
+    min-height: 100px;
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Ajuste de la rayita naranja para el modo mini */
+.sidebar-collapsed .nav-item.active::before {
+    height: 40px;
+    width: 6px;
+}
+
+
+
+/* --- MEJORA DE HOVERS PARA BOTONES --- */
+
+/* Botón Naranja (Relleno) */
+.btn-naranja-figma {
+    background-color: var(--naranja) !important;
+    color: white !important;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+    .btn-naranja-figma:hover {
+        /* Cambia el amarillo por un naranja más oscuro de la paleta */
+        background-color: #57C0C2 !important;
+        transform: translateY(-2px); /* Efecto sutil de elevación */
+        box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+    }
+
+/* Botón Outline (Borde Naranja) */
+.btn-outline-figma {
+    color: var(--naranja) !important;
+    border: 2px solid var(--naranja) !important;
+    background-color: transparent !important;
+    transition: all 0.3s ease;
+}
+
+    .btn-outline-figma:hover {
+        /* En lugar de amarillo, se rellena con el color principal */
+        background-color: var(--naranja) !important;
+        color: white !important;
+        box-shadow: 0 5px 15px rgba(230, 126, 34, 0.2);
+    }
+

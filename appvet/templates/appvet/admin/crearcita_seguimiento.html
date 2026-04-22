@@ -1,0 +1,226 @@
+{% extends 'appvet/shared/base_admin.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    
+    
+    main, .container, .container-fluid {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .admin-split-viewport {
+        position: relative;
+        height: calc(100vh - 60px); 
+        width: 100%;
+        display: flex;
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+
+    .side-image-container {
+        flex: 0 0 50%;
+        height: 100%;
+        position: relative;
+        background-color: #000;
+    }
+
+    .side-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .side-form-container {
+        flex: 0 0 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        background-color: #ffffff;
+    }
+
+    .form-inner-box {
+        width: 100%;
+        max-width: 480px;
+    }
+
+    .field-wrapper {
+        position: relative;
+        margin-bottom: 1.2rem;
+    }
+
+    .field-wrapper i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #17a2b8;
+        z-index: 5;
+    }
+
+    .gray-input-field {
+        width: 100%;
+        background-color: #f2f4f7 !important;
+        border: 2px solid transparent !important;
+        border-radius: 12px !important;
+        padding: 12px 15px 12px 45px !important;
+        color: #2d3436 !important;
+        font-weight: 500;
+        transition: 0.3s ease;
+    }
+
+    .gray-input-field:focus {
+        background-color: #ffffff !important;
+        border-color: #17a2b8 !important;
+        box-shadow: 0 5px 15px rgba(23, 162, 184, 0.1) !important;
+        outline: none;
+    }
+
+    .btn-gradient-confirm {
+        background: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 50px;
+        font-weight: bold;
+        width: 100%;
+        box-shadow: 0 8px 20px rgba(255, 159, 67, 0.3);
+        transition: 0.3s ease;
+    }
+
+    .btn-gradient-confirm:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+    }
+</style>
+
+<div class="admin-split-viewport">
+    <div class="side-image-container d-none d-lg-block">
+        <img src="{% static 'img/puddle.jpeg' %}" alt="Paciente">
+        
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 60px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: white;">
+            <h1 class="display-4 fw-bold mb-3" style="letter-spacing: -1px; line-height: 1.1;">
+                ¡Salud y Bienestar <br /> Primero!
+            </h1>
+            <p class="fs-4 m-0 opacity-75" style="max-width: 500px; font-weight: 300;">
+                Programa el seguimiento preventivo para
+                <strong class="text-info">{{ nombre_mascota }}</strong> de manera profesional.
+            </p>
+        </div>
+    </div>
+
+    <div class="side-form-container">
+        <div class="form-inner-box">
+            <div class="text-center mb-4">
+                <span class="text-info fw-bold small text-uppercase tracking-widest">Seguimiento Médico</span>
+                <h1 class="fw-bold text-dark mt-2 h2">Agendar Seguimiento</h1>
+            </div>
+
+            <div class="p-3 rounded-4 bg-light border-start border-4 border-info mb-4 d-flex align-items-center">
+                <i class="bi bi-heart-pulse-fill text-info fs-4 me-3"></i>
+                <div>
+                    <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.65rem;">Paciente Seleccionado</small>
+                    <span class="h5 fw-bold text-dark m-0">{{ nombre_mascota }}</span>
+                </div>
+            </div>
+
+            <form action="{% url 'guardar_cita_seguimiento' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="MascotaId" value="{{ mascota_id }}" />
+                <input type="hidden" name="UsuarioId" value="{{ usuario_id }}" />
+
+                <div class="field-wrapper">
+                    <i class="bi bi-clipboard2-pulse"></i>
+                    <select name="Servicio" class="gray-input-field" required>
+                        <option value="Consulta General">Consulta General</option>
+                        <option value="Vacunación">Vacunación</option>
+                        <option value="Desparasitación">Desparasitación</option>
+                    </select>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="field-wrapper">
+                            <i class="bi bi-calendar3"></i>
+                            <input type="date" name="Fecha" class="gray-input-field"
+                                   value="{{ fecha_sugerida }}"
+                                   min="{{ fecha_actual }}" required />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="field-wrapper">
+                            <i class="bi bi-clock"></i>
+                            <select name="Horario" class="gray-input-field" required>
+                                <option value="">Hora</option>
+                                <option value="09:00 AM">09:00 AM</option>
+                                <option value="10:00 AM">10:00 AM</option>
+                                <option value="11:00 AM">11:00 AM</option>
+                                <option value="12:00 PM">12:00 PM</option>
+                                <option value="03:00 PM">03:00 PM</option>
+                                <option value="04:00 PM">04:00 PM</option>
+                                <option value="05:00 PM">05:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-wrapper">
+                    <i class="bi bi-person-badge"></i>
+                    <select name="VeterinarioId" class="gray-input-field" required>
+                        <option value="">-- Seleccionar Médico --</option>
+                        {% for vete in veterinarios %}
+                            <option value="{{ vete.id }}">{{ vete.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field-wrapper mb-4">
+                    <i class="bi bi-flag-fill"></i>
+                    <select name="Prioridad" class="gray-input-field">
+                        <option value="Baja">Baja</option>
+                        <option value="Media" selected>Media</option>
+                        <option value="Alta">Alta</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-gradient-confirm shadow-lg">
+                    <i class="bi bi-check-circle-fill me-2"></i> FINALIZAR AGENDAMIENTO
+                </button>
+
+                <div class="text-center mt-3">
+                    <a href="{% url 'pacientes_por_volver' %}" class="text-decoration-none text-muted small fw-bold">
+                        <i class="bi bi-arrow-left"></i> Volver al panel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector('form');
+        const inputFecha = document.querySelector('input[name="Fecha"]');
+        
+        const hoy = new Date().toISOString().split('T')[0];
+        inputFecha.setAttribute('min', hoy);
+
+        form.addEventListener('submit', function (e) {
+            if (inputFecha.value < hoy) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Fecha Inválida',
+                    text: 'No puedes programar citas en días pasados.',
+                    icon: 'error',
+                    confirmButtonColor: '#3e929a'
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

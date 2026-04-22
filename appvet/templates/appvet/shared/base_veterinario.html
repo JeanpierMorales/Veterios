@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{{ title }}{% endblock %} - VetCare Especialista</title>
+
+    <link rel="stylesheet" href="{% static 'lib/bootstrap/dist/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}" />
+
+    <style>
+        :root {
+            --vet-primary: #2c8a93;
+            --vet-dark: #1a4d52;
+            --accent-info: #5bc0de;
+        }
+
+        #sidebar {
+            background: #111b27;
+        }
+
+        .nav-admin-link.active i {
+            color: var(--accent-info) !important;
+        }
+
+        .user-profile {
+            border-left: 4px solid var(--accent-info);
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        .pulse-effect {
+            animation: pulse-red 2s infinite;
+        }
+    </style>
+
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <div class="admin-container">
+        <nav id="sidebar">
+            <div class="p-4 border-bottom border-secondary border-opacity-25 mb-3">
+                <h4 class="fw-bold m-0 text-white d-flex align-items-center">
+                    <i class="bi bi-heart-pulse-fill me-2 text-info"></i>
+                    <span class="nav-text">VetCare <small class="fs-6 opacity-50">Med</small></span>
+                </h4>
+            </div>
+
+            <div class="flex-grow-1 nav flex-column">
+                <a href="{% url 'veterinario_inicio' %}" 
+                   class="nav-admin-link {% if request.resolver_match.url_name == 'veterinario_inicio' %}active{% endif %}">
+                    <i class="bi bi-calendar2-week-fill me-3"></i>
+                    <span class="nav-text">Mi Agenda</span>
+                </a>
+
+                <a href="{% url 'historial_pacientes' %}" 
+                   class="nav-admin-link {% if request.resolver_match.url_name == 'historial_pacientes' %}active{% endif %}">
+                    <i class="bi bi-file-earmark-medical-fill me-3"></i>
+                    <span class="nav-text">Historial Pacientes</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout border-0 bg-transparent text-start w-100 d-flex align-items-center">
+                        <i class="bi bi-box-arrow-left me-3 fs-5"></i>
+                        <span class="nav-text">Cerrar Sesión</span>
+                    </button>
+                </form>
+            </div>
+        </nav>
+
+        <div class="d-flex flex-column w-100">
+            <header class="premium-header bg-white shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="toggleBtn" class="btn btn-light border-0 me-4">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <h5 class="fw-bold text-dark m-0">{% block header_title %}{{ title }}{% endblock %}</h5>
+                </div>
+
+                <div class="user-profile d-flex align-items-center bg-light rounded-pill px-3 py-1">
+                    <div class="me-3 text-end d-none d-sm-block">
+                        <p class="m-0 small fw-bold text-dark">Dr. {{ user.username }}</p>
+                        <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.65rem;">ESPECIALISTA</span>
+                    </div>
+                    <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                        <i class="bi bi-person-badge fs-5"></i>
+                    </div>
+                </div>
+            </header>
+
+            <main class="p-4" style="background-color: #f8fafc; flex: 1; overflow-y: auto;">
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script src="{% static 'lib/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/admin-actions.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

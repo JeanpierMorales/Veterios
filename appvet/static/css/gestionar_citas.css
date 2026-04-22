@@ -1,0 +1,87 @@
+
+.btn-back-circle {
+    width: 48px;
+    height: 48px;
+    background-color: #ffffff;
+    color: #2c8a93; 
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1.4rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    margin-right: 15px; 
+}
+
+    /* Efecto de Interacción (Hover) */
+    .btn-back-circle:hover {
+        background-color: #2c8a93;
+        color: #ffffff;
+        transform: translateX(-5px); 
+        box-shadow: 0 6px 16px rgba(44, 138, 147, 0.2);
+        border-color: #2c8a93;
+    }
+
+    /* Ajuste para el icono de Bootstrap */
+    .btn-back-circle i {
+        line-height: 0;
+        display: flex;
+    }
+
+
+/* Contenedor principal */
+.page-container {
+    background-color: #ffffff !important;
+    padding: 2rem;
+}
+
+
+
+/* DISEÑO PARA LAS CARDS */
+.admin-appointment-card, .card.border-0 {
+    background: linear-gradient(145deg, #3b4b6b, #2d3a54) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+    .admin-appointment-card:hover, .card.border-0:hover {
+        background: linear-gradient(145deg, #44567a, #354463) !important;
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(59, 75, 107, 0.2) !important;
+    }
+
+    .admin-appointment-card h5,
+    .admin-appointment-card .fw-bold,
+    .card.border-0 h5,
+    .card.border-0 .fw-bold {
+        color: #ffffff !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+
+    .admin-appointment-card .text-muted,
+    .card.border-0 .text-muted {
+        color: #d1d5db !important; 
+        font-weight: 500;
+    }
+
+
+
+.bg-light.p-3 {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #57C0C2 !important;
+    backdrop-filter: blur(5px);
+}
+
+.border-top {
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    margin-top: 15px !important;
+    padding-top: 15px !important;
+}

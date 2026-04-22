@@ -1,0 +1,72 @@
+{% extends 'appvet/shared/base.html' %}
+{% load static %}
+
+{% block title %}Nuestra Pasión - VETERIOS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    {# SECCIÓN 1: EL ALMA DE VETERIOS #}
+    <div class="row align-items-center g-5 mb-5 pb-5">
+        <div class="col-lg-6">
+            <h1 class="display-3 fw-bold text-dark mb-4">Más que una clínica, somos <span style="color: #3e929a;">familia</span>.</h1>
+            <p class="fs-5 text-muted lh-lg">
+                En <strong>VETERIOS</strong>, entendemos que tu mascota es un miembro vital de tu hogar. No solo curamos enfermedades; protegemos vínculos emocionales. Con más de 10 años de trayectoria, hemos construido un refugio de salud donde la ciencia médica se encuentra con la compasión humana.
+            </p>
+            {# Link a Instagram personalizado #}
+            <a href="https://www.instagram.com/pollo_con_tamarindo?igsh=MXQzM281aGZidnN4Mg==" target="_blank" class="btn btn-lg rounded-pill px-4 mt-3 text-white shadow-sm" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border:none;">
+                <i class="bi bi-instagram me-2"></i>Nuestra Comunidad en Instagram
+            </a>
+        </div>
+        <div class="col-lg-6 text-center">
+            <img src="{% static 'img/catandcocker.jpeg' %}" class="img-fluid rounded-5 shadow-lg" alt="Equipo VETERIOS">
+        </div>
+    </div>
+
+    {# SECCIÓN 2: ESPECIALISTAS EN PEQUEÑOS AMIGOS #}
+    <div class="bg-light rounded-5 p-5 mb-5 shadow-sm">
+        <h2 class="text-center fw-bold mb-5">Especialistas en cada especie</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-5">
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm h-100">
+                    <img src="{% static 'img/rabbit.jpeg' %}" class="card-img-top object-fit-cover" style="height: 300px;" alt="Exóticos">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold text-info">Medicina de Exóticos</h4>
+                        <p class="text-muted small">Cuidado especializado para conejos y aves. Protocolos de anestesia segura y nutrición avanzada.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm h-100">
+                    <img src="{% static 'img/hamster.jpeg' %}" class="card-img-top object-fit-cover" style="height: 300px;" alt="Hamster">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold text-info">Pequeños Roedores</h4>
+                        <p class="text-muted small">Expertos en hámsters y cobayas. Diagnósticos rápidos para pacientes de metabolismo acelerado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# SECCIÓN 3: EMERGENCIAS 24/7 #}
+    <div class="bg-dark rounded-5 p-5 text-white shadow-lg overflow-hidden position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-3">¿Una emergencia a medianoche?</h2>
+                <p class="fs-5 opacity-75 mb-4">No estás solo. En <strong>VETERIOS</strong> contamos con un equipo de guardia permanente listo para actuar ante cualquier eventualidad crítica.</p>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-danger p-3 rounded-circle shadow-pulse">
+                        <i class="bi bi-telephone-fill fs-3 text-white"></i>
+                    </div>
+                    <div>
+                        <span class="d-block small text-uppercase opacity-50">Central de Urgencias 24/7</span>
+                        <span class="h3 fw-bold">+51 987 654 321</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-end opacity-10 d-none d-lg-block">
+                <i class="bi bi-hospital" style="font-size: 15rem;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

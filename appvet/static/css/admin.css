@@ -1,0 +1,146 @@
+
+:root {
+    --admin-bg: #f4f7f6;
+    --sidebar-dark: #111b27; 
+    --header-mid: #e2e8f0; 
+    --accent-vibrant: #3e929a;
+}
+
+/* ESTRUCTURA PRINCIPAL */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.admin-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+    /* Contenedor de la derecha (Header + Main) */
+    .admin-container > .d-flex.flex-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        background-color: var(--admin-bg);
+    }
+
+/* SIDEBAR */
+#sidebar {
+    min-width: 260px;
+    max-width: 260px;
+    background: var(--sidebar-dark);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+    #sidebar.collapsed {
+        min-width: 80px;
+        max-width: 80px;
+    }
+
+/* HEADER */
+.premium-header {
+    background-color: var(--header-mid) !important; 
+    min-height: 70px;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #cbd5e1; 
+    position: relative;
+}
+
+    
+    .premium-header::after {
+        display: none;
+    }
+
+/* AREA DE CONTENIDO */
+main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+/* LINKS DEL SIDEBAR */
+.nav-admin-link {
+    color: rgba(255,255,255,0.6) !important;
+    padding: 15px 20px;
+    margin: 4px 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+    .nav-admin-link i {
+        font-size: 1.2rem;
+        min-width: 35px;
+    }
+
+    .nav-admin-link:hover, .nav-admin-link.active {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff !important;
+    }
+
+        .nav-admin-link.active i {
+            color: var(--accent-vibrant) !important;
+        }
+
+/* FOOTER DEL SIDEBAR */
+.sidebar-footer {
+    margin-top: auto;
+    padding: 20px;
+    background: rgba(0,0,0,0.2);
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.btn-logout {
+    color: #ff7675 !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* MINI SIDEBAR */
+#sidebar.collapsed .nav-text, #sidebar.collapsed h4 span {
+    display: none;
+}
+
+#sidebar.collapsed .nav-admin-link {
+    justify-content: center;
+}
+
+
+/* MEJORA VISUAL */
+.vet-card {
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.3s ease;
+}
+
+    .vet-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        border-color: var(--accent-vibrant) !important;
+    }
+
+.table thead th {
+    background-color: var(--sidebar-dark) !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.badge {
+    font-weight: 600;
+}

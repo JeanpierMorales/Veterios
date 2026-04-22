@@ -1,0 +1,376 @@
+
+:root {
+    --vet-turquesa: #3e929a;
+    --vet-naranja: #e67e22;
+    --vet-gris-input: #f0f0f0;
+}
+
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 130px);
+    background-color: #ffffff;
+}
+
+.main-auth-container {
+    background-color: #fff;
+    border-radius: 60px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    position: relative;
+    width: 1050px;
+    height: 650px;
+    overflow: hidden;
+}
+
+.form-box {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 60px;
+}
+
+.login-container {
+    right: 0;
+    z-index: 2;
+}
+
+.register-container {
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+}
+
+.main-auth-container.active .login-container {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.main-auth-container.active .register-container {
+    transform: translateX(0);
+    opacity: 1;
+    z-index: 5;
+}
+
+.overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+}
+
+.main-auth-container.active .overlay-container {
+    transform: translateX(100%);
+}
+
+.overlay {
+    background: var(--vet-naranja);
+    color: white;
+    height: 100%;
+    width: 200%;
+    position: relative;
+    left: 0;
+    transition: transform 0.6s ease-in-out;
+    border-radius: 0 200px 150px 0; 
+}
+
+.main-auth-container.active .overlay {
+    transform: translateX(-50%);
+    border-radius: 200px 0 0 150px; 
+}
+
+.input-group-figma {
+    background-color: var(--vet-gris-input);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row-reverse; 
+    align-items: center;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+}
+
+    .input-group-figma input {
+        background: transparent;
+        border: none;
+        flex: 1;
+        outline: none;
+        font-size: 1.1rem;
+    }
+
+    .input-group-figma i {
+        color: var(--vet-turquesa);
+        font-size: 1.3rem;
+    }
+
+
+
+
+
+
+
+
+
+/* --- BOTONES DE LA BARRA (NAVBAR) --- */
+
+/* Botones grises/turquesa (Quiénes somos / Ofertas) */
+.btn-nav-figma {
+    background-color: #b2d4d8 !important; /* Color turquesa claro del Figma */
+    color: #e67e22 !important; /* Texto naranja */
+    border-radius: 20px;
+    padding: 8px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+    .btn-nav-figma:hover {
+        background-color: #d1d8db !important;
+        transform: translateY(-2px);
+    }
+
+/* Botón Naranja (Iniciar sesión) */
+.btn-naranja-figma {
+    background-color: var(--vet-naranja) !important;
+    color: white !important;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+    .btn-naranja-figma:hover {
+        background-color: #d35400 !important;
+        transform: scale(1.05);
+    }
+
+/* Mejora de los inputs para que no se vean pegados */
+.input-group-figma {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid transparent;
+    transition: border 0.3s ease;
+}
+
+    .input-group-figma:focus-within {
+        border: 1px solid var(--vet-turquesa);
+    }
+
+
+
+
+
+
+
+/**Cliente css*/
+
+.text-turquesa-figma {
+    color: #3e929a;
+}
+
+.bg-naranja-figma {
+    background-color: #e67e22 !important;
+}
+
+.btn-naranja-figma {
+    background-color: #e67e22;
+    border: none;
+    transition: 0.3s;
+}
+
+    .btn-naranja-figma:hover {
+        background-color: #d35400;
+    }
+
+.btn-naranja-figma-outline {
+    background-color: transparent;
+    border: 2px solid #e67e22;
+    color: #e67e22;
+}
+
+
+
+
+/* --- DASHBOARD ESTRUCTURA --- */
+.main-dashboard {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: #3e929a;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    position: fixed;
+    height: 100vh;
+}
+
+.content {
+    margin-left: 260px;
+    flex-grow: 1;
+    background-color: #ffffff;
+}
+
+/* --- ELEMENTOS DEL SIDEBAR --- */
+.sidebar-logo {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+    .sidebar-logo img {
+        height: 90px;
+    }
+
+.nav-item {
+    display: block;
+    padding: 15px 30px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: 0.3s;
+}
+
+    .nav-item i {
+        margin-right: 15px;
+    }
+
+    .nav-item:hover {
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+    .nav-item.active {
+        color: #e67e22;
+    }
+/* Color del prototipo */
+
+/* --- HEADER DE SECCIÓN --- */
+.section-header {
+    background-color: #3e929a;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+/* --- TARJETAS Y BOTONES --- */
+.pet-list-container {
+    background-color: #e0e0e0; /* Gris del prototipo */
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.pet-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.btn-naranja {
+    background-color: #e67e22 !important;
+    color: white !important;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: bold;
+    border: none;
+}
+
+.btn-naranja-outline {
+    background-color: transparent;
+    border: 2px solid #e67e22;
+    color: #e67e22;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: bold;
+}
+
+.citas-empty-state {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    padding: 60px;
+    text-align: center;
+}
+
+/* --- ADAPTACIÓN PARA MÓVILES (VetCare Responsive) --- */
+@media (max-width: 768px) {
+    /* El contenedor deja de ser rígido y ocupa el ancho del cel */
+    .main-auth-container {
+        width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Escondemos el panel naranja en móviles porque quita espacio visual */
+    .overlay-container {
+        display: none !important;
+    }
+
+    /* Los formularios ocupan todo el ancho y se centran */
+    .form-box {
+        position: relative !important;
+        width: 100% !important;
+        left: 0 !important;
+        padding: 40px 20px !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* Por defecto mostramos el login, escondemos el registro */
+    .register-container {
+        display: none;
+    }
+
+
+
+
+    /* ESTO EVITA QUE EL FORMULARIO SE VAYA AL "LIMBO" BLANCO */
+    .main-auth-container.right-panel-active .login-container {
+        transform: none !important;
+        opacity: 0;
+        display: none !important;
+    }
+
+    .main-auth-container.right-panel-active .register-container {
+        transform: none !important;
+        opacity: 1;
+        display: flex !important;
+        left: 0 !important; /* Lo obliga a estar al inicio */
+        width: 100% !important;
+    }
+
+    /* Forzamos que el login también ocupe todo el ancho cuando esté activo */
+    .login-container {
+        transform: none !important;
+        left: 0 !important;
+        width: 100% !important;
+        display: flex !important;
+    }
+}
