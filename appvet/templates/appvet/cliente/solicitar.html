@@ -1,0 +1,85 @@
+{% extends 'appvet/shared/base.html' %}
+{% load static %}
+
+{% block title %}Solicitar Cita{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4 p-5 bg-white">
+    <h4 class="fw-bold mb-4 text-dark">Ingrese los datos solicitados a continuación:</h4>
+
+    <form action="{% url 'guardar_cita' %}" method="post">
+        {% csrf_token %}
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Mascota</label>
+                    <select name="mascota_id" class="form-select border-0 bg-light py-3 rounded-3 shadow-sm" required>
+                        <option value="">Seleccione su mascota</option>
+                        {% for mascota in mascotas %}
+                            <option value="{{ mascota.id }}">{{ mascota.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Servicio</label>
+                    <select name="servicio" class="form-select border-0 bg-light py-3 rounded-3 shadow-sm" required>
+                        <option value="">Seleccione el tipo de servicio</option>
+                        <option value="Consulta General">Consulta General</option>
+                        <option value="Vacunación">Vacunación</option>
+                        <option value="Baño y Corte">Baño y Corte</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Fecha</label>
+                    <input name="fecha" type="date" class="form-control border-0 bg-light py-3 rounded-3 shadow-sm" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Horario</label>
+                    <select name="horario" class="form-select border-0 bg-light py-3 rounded-3 shadow-sm" required>
+                        <option value="">Horario</option>
+                        <option value="09:00 AM">09:00 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="03:00 PM">03:00 PM</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <label class="form-label fw-bold">Observaciones</label>
+                <textarea name="observaciones" class="form-control border-0 bg-light rounded-3 shadow-sm"
+                          style="height: 380px;" placeholder="Ej: Mi mascota ha estado decaída..."></textarea>
+            </div>
+        </div>
+
+        <div class="mt-5 text-end">
+            <button type="submit" class="btn btn-naranja-figma px-5 py-3 fw-bold rounded-pill shadow">
+                Confirmar Solicitud
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+
+{% block scripts %}
+#<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    /* Integración con el sistema de Mensajes de Django
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: '{% if message.tags == "success" %}¡Logrado!{% elif message.tags == "error" %}¡Atención!{% else %}Aviso{% endif %}',
+                text: '{{ message }}',
+                icon: '{% if message.tags == "error" %}warning{% else %}{{ message.tags }}{% endif %}'
+            });
+        {% endfor %}
+    {% endif %}
+    */
+</script>
+{% endblock %}
+
+*/

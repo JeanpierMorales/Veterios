@@ -1,0 +1,81 @@
+{% extends 'appvet/shared/base.html' %}
+{% load static %}
+
+{% block title %}Registro de mascota{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/registro-mascota.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="full-split-wrapper">
+    <div class="expert-image-side d-none d-lg-flex">
+        <img src="{% static 'img/registromascota.jpg' %}" alt="Vinculo Mascota">
+        <div class="expert-image-overlay">
+            <h1 class="display-3 fw-bold mb-2">Un nuevo integrante?</h1>
+            <p class="fs-4 fw-light opacity-90">Registralo para darle el cuidado que merece.</p>
+        </div>
+    </div>
+
+    <div class="expert-form-side">
+        <div class="form-header-group">
+            <h2 class="title-vetcare mb-3">Registro de Mascota</h2>
+            <p class="text-muted fs-5">Completa los datos de tu compañero en nuestro sistema privado.</p>
+        </div>
+
+        <div style="width: 100%; max-width: 420px;">
+            <form action="{% url 'registrar_mascota' %}" method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="label-custom">Nombre del mejor amigo</label>
+                    <input type="text" name="nombre" class="form-control input-premium" placeholder="Ej: Hachiko" required />
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="label-custom">Especie</label>
+                        <select name="especie" class="form-select input-premium" required>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Conejo">Conejo</option>
+                            <option value="Cobaya">Cobaya</option>
+                            <option value="Hamster">Hamster</option>
+                            <option value="Ave">Ave</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="label-custom">Raza / Variedad</label>
+                        <input type="text" name="raza" class="form-control input-premium" placeholder="Ej: Beagle" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="label-custom">Fecha de Nacimiento</label>
+                        <input type="date" name="fecha_nacimiento" class="form-control input-premium" required />
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="label-custom">Sexo</label>
+                        <select name="sexo" class="form-select input-premium" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Macho">Macho</option>
+                            <option value="Hembra">Hembra</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-3 mt-4">
+                    <button type="submit" class="btn btn-finalizar-expert">
+                        FINALIZAR REGISTRO
+                    </button>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'inicio_cliente' %}" class="btn-volver-panel">
+                            Volver al panel
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
