@@ -1,0 +1,65 @@
+{% extends 'appvet/shared/base.html' %}
+{% load static %}
+
+{% block title %}Mis Citas{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/gestionar-citas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{% url 'inicio_cliente' %}" class="btn-back-circle shadow-sm">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <h2 class="fw-bold m-0" style="color: #2c8a93;">Seguimiento de mis Citas</h2>
+    </div>
+
+    {% if citas %}
+        <div class="row g-4">
+            {% for cita in citas %}
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-light p-3 rounded-3">
+                                    <i class="bi bi-calendar-check text-primary fs-4"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-0">{{ cita.mascota.nombre }}</h5>
+                                    <span class="text-muted small">{{ cita.servicio }}</span>
+                                </div>
+                            </div>
+                            <span class="badge {% if cita.estado == 'Pendiente' %}bg-warning{% else %}bg-success{% endif %} rounded-pill px-3 py-2">
+                                {{ cita.estado }}
+                            </span>
+                        </div>
+
+                        <div class="row g-2 border-top pt-3 mt-2">
+                             <div class="col-4">
+                                <small class="text-muted d-block">Fecha</small>
+                                <span class="fw-bold">{{ cita.fecha|date:"d/m/Y" }}</span>
+                             </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">Horario</small>
+                                <span class="fw-bold">{{ cita.horario }}</span>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">Veterinario</small>
+                                <span class="fw-bold">{{ cita.nombre_veterinario|default:"Por asignar" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-calendar2-x display-1 text-muted opacity-25"></i>
+            <h4 class="mt-3 text-muted">Aún no tienes citas programadas</h4>
+            <a href="{% url 'solicitar_cita' %}" class="btn btn-naranja-figma mt-3 px-4">Solicitar Cita</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

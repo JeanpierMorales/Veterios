@@ -1,0 +1,78 @@
+{% extends 'appvet/shared/base.html' %}
+{% load static %}
+
+{% block title %}Mis Mascotas{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/ver-todas-mismascotas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid page-container">
+    <div class="header-navigation-wrapper mb-5">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{% url 'inicio_cliente' %}" class="btn-back-circle shadow-sm" title="Volver al inicio">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="page-title m-0">Mi Familia Animal</h1>
+                    <p class="text-muted m-0">Gestiona la información de todos tus compañeros.</p>
+                </div>
+            </div>
+            <a href="{% url 'agregar_mascota' %}" class="btn-add-primary">
+                <i class="bi bi-plus-circle-fill me-2"></i>Registrar Nueva
+            </a>
+        </div>
+    </div>
+
+    {% if mascotas %}
+        <div class="mascotas-grid">
+            {% for mascota in mascotas %}
+                {% if mascota.especie|lower == 'perro' %}
+                    {% setvar 'style-perro' as especie_class %}
+                    {% setvar '🐶' as emoji %}
+                {% elif mascota.especie|lower == 'gato' %}
+                    {% setvar 'style-gato' as especie_class %}
+                    {% setvar '🐱' as emoji %}
+                {% elif mascota.especie|lower == 'loro' %}
+                    {% setvar 'style-loro' as especie_class %}
+                    {% setvar '🦜' as emoji %}
+                {% elif mascota.especie|lower == 'conejo' %}
+                    {% setvar 'style-conejo' as especie_class %}
+                    {% setvar '🐰' as emoji %}
+                {% elif mascota.especie|lower == 'hamster' %}
+                    {% setvar 'style-hamster' as especie_class %}
+                    {% setvar '🐹' as emoji %}
+                {% else %}
+                    {% setvar 'style-default' as especie_class %}
+                    {% setvar '🐾' as emoji %}
+                {% endif %}
+
+                <div class="pet-card {{ especie_class }} shadow-sm">
+                    <div class="card-accent"></div>
+                    <div class="pet-card-content">
+                        <div class="pet-visual">
+                            <div class="emoji-wrapper">
+                                <span>{{ emoji }}</span>
+                            </div>
+                        </div>
+                        <div class="pet-info">
+                            <h3 class="pet-name">{{ mascota.nombre }}</h3>
+                            <span class="pet-breed">{{ mascota.raza }}</span>
+                            <div class="pet-tag">{{ mascota.especie }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state-wrapper shadow-sm">
+            <div class="empty-icon">🐾</div>
+            <h2>Aún no hay huellas aquí</h2>
+            <p>Registra a tu primera mascota para empezar a disfrutar de nuestros servicios.</p>
+            <a href="{% url 'agregar_mascota' %}" class="btn-add-primary mt-3">Registrar ahora</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

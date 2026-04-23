@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetCare - {% block title %}{{ title }}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/cliente.css' %}">
+
+    {% block styles %}{% endblock %}
+</head>
+<body class="bg-light">
+
+    <div class="main-dashboard" id="wrapper">
+        {% include 'partials/_sidebar_cliente.html' %}
+
+        <div class="content-wrapper">
+            {% include 'partials/_header_cliente.html' %}
+
+            <main class="p-5">
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script src="{% static 'lib/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        document.getElementById('btnToggle')?.addEventListener('click', function() {
+            document.getElementById('wrapper').classList.toggle('sidebar-collapsed');
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+
+    <script>
+        window.addEventListener("pageshow", function (event) {
+            var perfEntries = performance.getEntriesByType("navigation");
+            if (perfEntries.length > 0 && perfEntries[0].type === "back_forward") {
+                // Ajusta esta ruta según tu urls.py de Django
+                window.location.replace("{% url 'login' %}"); 
+            }
+        });
+    </script>
+
+</body>
+</html>

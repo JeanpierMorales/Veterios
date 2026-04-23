@@ -1,0 +1,53 @@
+{% load static %}
+<aside class="sidebar">
+    <div class="sidebar-logo-container">
+        <img src="{% static 'img/logovetcare.png' %}" class="sidebar-logo-big" alt="Logo VetCare">
+    </div>
+
+    <nav class="sidebar-nav">
+        {# Capturamos el nombre de la ruta actual para manejar los estados activos #}
+        {% with url_name=request.resolver_match.url_name %}
+
+        <a href="{% url 'cliente_inicio' %}" class="nav-item {% if url_name == 'cliente_inicio' %}active{% endif %}">
+            <div class="active-indicator"></div>
+            <i class="bi bi-house-door-fill fs-4"></i>
+            <span class="nav-text ms-3">Inicio</span>
+        </a>
+
+        <a href="{% url 'cliente_solicitar' %}" class="nav-item {% if url_name == 'cliente_solicitar' %}active{% endif %}">
+            <div class="active-indicator"></div>
+            <i class="bi bi-calendar-plus fs-4"></i>
+            <span class="nav-text ms-3">Solicitar</span>
+        </a>
+
+        <a href="{% url 'cliente_citas' %}" class="nav-item {% if url_name == 'cliente_citas' or url_name == 'mis_mascotas' %}active{% endif %}">
+            <div class="active-indicator"></div>
+            <i class="bi bi-calendar-check fs-4"></i>
+            <span class="nav-text ms-3">Citas</span>
+        </a>
+
+        <a href="{% url 'cliente_historial' %}" class="nav-item {% if url_name == 'cliente_historial' %}active{% endif %}">
+            <div class="active-indicator"></div>
+            <i class="bi bi-journal-text fs-4"></i>
+            <span class="nav-text ms-3">Historial</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-footer pb-4">
+        <a href="{% url 'cliente_configuracion' %}" class="nav-item {% if url_name == 'cliente_configuracion' %}active{% endif %}">
+            <div class="active-indicator"></div>
+            <i class="bi bi-gear-fill fs-4"></i>
+            <span class="nav-text ms-3">Configuración</span>
+        </a>
+        
+        <form action="{% url 'logout' %}" method="post" id="logout-form" style="display: none;">
+            {% csrf_token %}
+        </form>
+        <a href="javascript:void(0)" onclick="document.getElementById('logout-form').submit();" class="nav-item">
+            <i class="bi bi-box-arrow-right fs-4 text-danger"></i>
+            <span class="nav-text ms-3 text-danger fw-bold">Cerrar sesión</span>
+        </a>
+    </div>
+    {% endwith %}
+</aside>
