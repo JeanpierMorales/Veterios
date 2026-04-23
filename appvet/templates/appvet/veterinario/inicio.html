@@ -1,0 +1,92 @@
+{% extends "appvet/layout_veterinario.html" %}
+
+{% block title %}Agenda - {{ vista }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        {# Cabecera #}
+        <div class="bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="btn-group border rounded-3 me-3 shadow-sm bg-white">
+                    <a href="?fecha={{ fecha_anterior }}&vista={{ vista }}" class="btn btn-light border-end px-3">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    <a href="?fecha={{ hoy_str }}&vista={{ vista }}" class="btn btn-light fw-bold px-3">Hoy</a>
+                    <a href="?fecha={{ fecha_siguiente }}&vista={{ vista }}" class="btn btn-light border-start px-3">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+                <h4 class="fw-bold m-0 text-dark">
+                    {% if vista == "Semana" %}
+                        <span class="text-info text-uppercase fs-6 d-block" style="letter-spacing: 1px;">Semana del</span>
+                        <span>{{ inicio_semana|date:"d M" }} - {{ fin_semana|date:"d M Y" }}</span>
+                    {% else %}
+                        <span class="text-info text-uppercase fs-6 d-block" style="letter-spacing: 1px;">Agenda del día</span>
+                        <span>{{ fecha_actual|date:"l, d F Y" }}</span>
+                    {% endif %}
+                </h4>
+            </div>
+
+            <div class="btn-group shadow-sm">
+                <a href="?fecha={{ fecha_actual|date:'Y-m-d' }}&vista=Dia" class="btn btn-outline-info {% if vista == 'Dia' %}active{% endif %} px-4">Día</a>
+                <a href="?fecha={{ fecha_actual|date:'Y-m-d' }}&vista=Semana" class="btn btn-outline-info {% if vista == 'Semana' %}active{% endif %} px-4">Semana</a>
+            </div>
+        </div>
+
+        <div class="calendar-main bg-white">
+            <div class="calendar-scroll-area position-relative" style="height: calc(100vh - 250px); overflow-y: auto;">
+                <div class="d-flex">
+                    {# Columna de Horas #}
+                    <div class="time-column border-end bg-light" style="width: 70px; flex-shrink: 0;">
+                        {% for h in rango_horas %}
+                            <div class="hour-cell border-bottom text-center text-muted d-flex align-items-center justify-content-center" style="height: 60px; font-size: 0.75rem;">
+                                {{ h|stringformat:"i" }}:00
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {# Grilla de Días #}
+                    <div class="days-grid d-flex flex-grow-1 position-relative">
+                        {% for dia in dias_mostrados %}
+                            <div class="day-column border-end position-relative flex-grow-1" style="width: {{ ancho_columna }}%;">
+                                {% for h in rango_horas %}
+                                    <div class="grid-line border-bottom" style="height: 60px;"></div>
+                                {% endfor %}
+
+                                {# Bucle de Citas para este día #}
+                                {% for cita in citas %}
+                                    {% if cita.fecha_dt|date:"Y-m-d" == dia|date:"Y-m-d" %}
+                                        <div class="appointment-card position-absolute rounded-3 shadow p-2 bg-dark text-white border-start border-4"
+                                             style="top: {{ cita.top_px }}px; left: 4px; right: 4px; height: 75px; z-index: 10; border-color: {{ cita.color_prioridad }} !important;">
+                                            
+                                            <div class="d-flex flex-column justify-content-between h-100">
+                                                <div class="text-truncate">
+                                                    <div class="fw-bold" style="font-size: 0.8rem; color: {{ cita.color_prioridad }} !important;">{{ cita.mascota_nombre }}</div>
+                                                    <div class="text-white-50" style="font-size: 0.65rem;">{{ cita.horario }}</div>
+                                                </div>
+
+                                                {% if cita.estado == "Completada" %}
+                                                    <span class="badge bg-success w-100" style="font-size: 0.6rem;">FINALIZADA</span>
+                                                {% elif dia|date:"Y-m-d" == hoy_str %}
+                                                    <button onclick="abrirAtencion({{ cita.id }}, '{{ cita.mascota_nombre }}')"
+                                                            class="btn btn-info btn-sm w-100 py-0 fw-bold"
+                                                            style="font-size: 0.6rem; height: 18px; line-height: 1;">
+                                                        ATENDER
+                                                    </button>
+                                                {% else %}
+                                                    <span class="badge bg-secondary w-100 opacity-50" style="font-size: 0.6rem;">NO DISPONIBLE</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
