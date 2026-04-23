@@ -1,0 +1,53 @@
+{% extends "appvet/layout_veterinario.html" %}
+
+{% block title %}Mis Consultas Finalizadas{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-5">
+    <div class="mb-4">
+        <h2 class="fw-bold"><i class="bi bi-check2-circle text-success me-2"></i>Mis Consultas</h2>
+        <p class="text-muted">Listado de pacientes atendidos recientemente por usted.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th class="ps-4 py-3">Fecha</th>
+                        <th>Paciente</th>
+                        <th>Dueño</th>
+                        <th>Diagnóstico</th>
+                        <th class="pe-4 text-center">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in consultas %}
+                        <tr>
+                            <td class="ps-4">
+                                {{ item.fecha_atencion|date:"d/m/Y" }} <br />
+                                <small class="text-muted">{{ item.fecha_atencion|date:"h:i A" }}</small>
+                            </td>
+                            <td class="fw-bold text-dark">{{ item.mascota.nombre }}</td>
+                            <td>{{ item.mascota.usuario.nombre }}</td>
+                            <td class="text-truncate" style="max-width: 250px;" title="{{ item.diagnostico }}">
+                                {{ item.diagnostico }}
+                            </td>
+                            <td class="pe-4 text-center">
+                                <a href="{% url 'detalle_mascota' item.mascota.id %}"
+                                   class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                    <i class="bi bi-eye"></i> Ver Ficha
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">Aún no has finalizado ninguna consulta.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
