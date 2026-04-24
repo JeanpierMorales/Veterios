@@ -118,7 +118,7 @@ STATIC_URL = 'static/'
 
 # Esta línea le dice a Django dónde están tus CSS/JS/IMG de desarrollo
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / 'appvet' / 'static',
 ]
 
 # Configuración para archivos que suban los usuarios (fotos de mascotas)
