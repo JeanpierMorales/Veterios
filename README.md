@@ -13,7 +13,7 @@ Este proyecto consiste en un ecosistema digital integral para la clínica veteri
 
 **Curso:** Desarrollo basado en plataformas
 
-**Institución:** Universidad Tecnológica del Perú (UTP) - 2026-01
+**Institución:** Universidad San Ignacio de Loyola (USIL) - 2026-01
 
 ---
 
