@@ -8,7 +8,7 @@
         {# Capturamos el nombre de la ruta actual para manejar los estados activos #}
         {% with url_name=request.resolver_match.url_name %}
 
-        <a href="{% url 'cliente_inicio' %}" class="nav-item {% if url_name == 'cliente_inicio' %}active{% endif %}">
+        <a href="{% url 'inicio_cliente' %}" class="nav-item {% if url_name == 'inicio_cliente' %}active{% endif %}"></a>
             <div class="active-indicator"></div>
             <i class="bi bi-house-door-fill fs-4"></i>
             <span class="nav-text ms-3">Inicio</span>

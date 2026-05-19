@@ -1,0 +1,125 @@
+{% extends 'appvet/shared/base_cliente.html' %}
+{% load static %}
+
+{% block title %}Inicio - VETERIOS{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4 mb-4 dashboard-card">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold m-0 section-title" style="color: #2c8a93;">
+                <i class="bi bi-grid-fill me-2"></i> Mis mascotas
+            </h5>
+            <span class="badge rounded-pill bg-info text-white px-3 py-2" style="font-size: 0.9rem;">
+                {{ total_mascotas }} en total
+            </span>
+        </div>
+
+        <div class="mascotas-grid-container">
+            {% if mascotas %}
+                <div class="row g-3">
+                    {% for mascota in mascotas|slice:":6" %}
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <div class="mascota-item-card h-100 shadow-sm p-3 rounded-4 border 
+                                {% if mascota.especie.lower == 'perro' %}card-perro
+                                {% elif mascota.especie.lower == 'gato' %}card-gato
+                                {% elif mascota.especie.lower == 'loro' %}card-loro
+                                {% elif mascota.especie.lower == 'conejo' %}card-conejo
+                                {% elif mascota.especie.lower == 'hamster' %}card-hamster
+                                {% else %}card-default{% endif %}">
+                                
+                                <div class="d-flex align-items-center">
+                                    <div class="species-icon-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: #f1f5f9; border-radius: 50%; font-size: 1.5rem;">
+                                        {% if mascota.especie.lower == 'perro' %}
+                                            <span class="emoji-icon">🐶</span>
+                                        {% elif mascota.especie.lower == 'gato' %}
+                                            <span class="emoji-icon">🐱</span>
+                                        {% elif mascota.especie.lower == 'loro' %}
+                                            <span class="emoji-icon">🦜</span>
+                                        {% elif mascota.especie.lower == 'conejo' %}
+                                            <span class="emoji-icon">🐰</span>
+                                        {% else %}
+                                            <span class="emoji-icon">🐾</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ms-3 flex-grow-1">
+                                        <h6 class="fw-bold mb-0 name-text" style="color: #2d3748;">{{ mascota.nombre }}</h6>
+                                        <div class="d-flex justify-content-between align-items-center mt-1">
+                                            <small class="text-secondary">{{ mascota.especie }}</small>
+                                            <small class="fw-bold" style="color: #ff9f43;">{{ mascota.raza }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <p class="text-muted">Aún no has registrado ninguna mascota. ¡Agrega la primera para empezar!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="d-flex gap-3 justify-content-end mt-4">
+            <a href="#" class="btn btn-naranja-figma shadow-sm rounded-pill px-4" style="background-color: #ff9f43; color: white; font-weight: bold;">
+                Agregar una mascota +
+            </a>
+            
+            {% if total_mascotas > 6 %}
+                <a href="#" class="btn btn-outline-secondary rounded-pill px-4">
+                    Ver todas ({{ total_mascotas }})
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+    <h4 class="fw-bold mb-4" style="color: #2c8a93;">Citas de hoy</h4>
+
+    {% if citas_hoy %}
+        <div class="row g-3">
+            {% for cita in citas_hoy %}
+                <div class="col-md-6">
+                    <div class="bg-dark text-white rounded-4 p-4 position-relative overflow-hidden shadow">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-25 rounded-3 p-2 me-3">
+                                    <i class="bi bi-calendar-check text-info fs-4"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold m-0">{{ cita.mascota.nombre }}</h5>
+                                    <small class="text-white-50">{{ cita.servicio }}</small>
+                                </div>
+                            </div>
+                            <span class="badge bg-success rounded-pill px-3">{{ cita.estado }}</span>
+                        </div>
+                        <hr class="border-secondary opacity-25">
+                        <div class="row">
+                            <div class="col-5">
+                                <small class="d-block text-white-50">Horario</small>
+                                <span class="fw-bold text-info">{{ cita.horario }}</span>
+                            </div>
+                            <div class="col-7">
+                                <small class="d-block text-white-50">Veterinario Asignado</small>
+                                <span class="fw-bold">
+                                    {% if cita.nombre_veterinario %}
+                                        {{ cita.nombre_veterinario }}
+                                    {% else %}
+                                        Pendiente de asignar
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-light text-center py-5 rounded-4" style="border: 2px dashed #e2e8f0 !important;">
+            <p class="text-muted m-0 fs-5">No tiene citas registradas para hoy día</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
