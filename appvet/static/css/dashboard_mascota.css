@@ -1,0 +1,131 @@
+
+.mascotas-grid-container {
+    padding: 10px 0;
+}
+
+
+.mascota-item-card {
+    border-radius: 20px;
+    padding: 1.5rem;
+    background: #e2e8f0; 
+    border: 1px solid #cbd5e1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+    .mascota-item-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        background: #ffffff; 
+        box-shadow: 0 15px 30px rgba(44, 138, 147, 0.15);
+        border-color: #2c8a93;
+    }
+
+
+.card-perro {
+    border-left: 8px solid #0d6efd !important;
+}
+/* Azul */
+.card-gato {
+    border-left: 8px solid #6f42c1 !important;
+}
+/* Morado  */
+.card-loro {
+    border-left: 8px solid #198754 !important;
+}
+/* Verde */
+.card-conejo {
+    border-left: 8px solid #fd7e14 !important;
+}
+/* Naranja */
+.card-hamster {
+    border-left: 8px solid #d63384 !important;
+}
+/* rosita uwu */
+.card-default {
+    border-left: 8px solid #64748b !important;
+}
+
+
+/* Círculo del Icono */
+.species-icon-circle {
+    width: 55px;
+    height: 55px;
+    background: white;
+    color: #2c8a93; 
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+    .species-icon-circle i {
+        display: inline-block !important;
+        line-height: 1;
+    }
+
+/* Tipografía dentro de la card */
+.name-text {
+    color: #1e293b;
+    font-size: 1.2rem;
+}
+
+.text-naranja {
+    color: #ff9d42;
+    font-weight: 700;
+}
+
+
+
+
+/* Botón Principal: Agregar una mascota */
+.btn-naranja-primary {
+    background: linear-gradient(135deg, #ff9d42 0%, #f38a2b 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 15px rgba(255, 157, 66, 0.3) !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+    .btn-naranja-primary:hover {
+        transform: translateY(-2px); /* Efecto de elevación */
+        box-shadow: 0 8px 20px rgba(255, 157, 66, 0.4) !important;
+        filter: brightness(1.1);
+    }
+
+/* Botón Secundario: Ver todas */
+.btn-ver-todas {
+    background: white !important;
+    color: #2c8a93 !important; 
+    border: 2px solid #2c8a93 !important;
+    border-radius: 12px !important;
+    padding: 10px 24px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+    .btn-ver-todas:hover {
+        background: #2c8a93 !important;
+        color: white !important;
+        transform: translateY(-2px);
+    }
+
+
+.emoji-icon {
+    font-size: 1.8rem; 
+    line-height: 1;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); 
+}

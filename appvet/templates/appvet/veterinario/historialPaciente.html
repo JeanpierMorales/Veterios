@@ -1,0 +1,99 @@
+{% extends "appvet/layout_veterinario.html" %}
+
+{% block title %}Historial Clínico{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h2 class="fw-bold text-dark"><i class="bi bi-journal-medical text-info me-2"></i>Historial Clínico</h2>
+            <p class="text-muted">Consulta los antecedentes médicos de todos los pacientes.</p>
+        </div>
+        <div class="col-md-6">
+            {# El formulario de búsqueda apunta a la misma vista #}
+            <form method="get" action="{% url 'historial_clinico' %}" class="d-flex shadow-sm rounded-pill overflow-hidden bg-white border">
+                <input type="text" name="searchString" class="form-control border-0 px-4 py-2 shadow-none" placeholder="Buscar por mascota o dueño..." value="{{ request.GET.searchString }}">
+                <button type="submit" class="btn btn-info px-4 text-white">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th class="px-4 py-3">Fecha</th>
+                        <th>Paciente</th>
+                        <th>Dueño</th>
+                        <th>Diagnóstico</th>
+                        <th>Tratamiento</th>
+                        <th class="text-center">Acción</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    {% for item in historial %}
+                        <tr>
+                            <td class="px-4">
+                                <span class="fw-bold text-dark">{{ item.fecha_atencion|date:"d/m/Y" }}</span>
+                                <div class="small text-muted">{{ item.fecha_atencion|date:"h:i A" }}</div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-info bg-opacity-10 text-info rounded-circle p-2 me-2">
+                                        <i class="bi bi-dog"></i>
+                                    </div>
+                                    <span class="fw-bold text-dark">{{ item.mascota.nombre }}</span>
+                                </div>
+                            </td>
+                            <td><span class="text-muted small">{{ item.mascota.usuario.nombre }}</span></td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 180px;" title="{{ item.diagnostico }}">
+                                    {{ item.diagnostico }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 180px;" title="{{ item.tratamiento }}">
+                                    {{ item.tratamiento }}
+                                </div>
+                            </td>
+                            <td class="text-center px-4">
+                                {# URL dinámica al detalle de la mascota #}
+                                <a href="{% url 'detalle_mascota' item.mascota.id %}"
+                                   class="btn btn-info btn-sm rounded-pill px-3 text-white fw-bold shadow-sm">
+                                    <i class="bi bi-journal-text me-1"></i> VER EXPEDIENTE
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">No se encontraron registros.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function verDetalleCompleto(diag, trat) {
+        Swal.fire({
+            title: 'Información Médica',
+            html: `
+                <div class="text-start mt-3 p-2" style="font-size: 0.9rem;">
+                    <p class="mb-1 fw-bold text-info text-uppercase" style="font-size: 0.75rem;">Diagnóstico:</p>
+                    <p class="text-muted border-start border-3 ps-2 mb-3">${diag || 'Sin registro'}</p>
+                    <p class="mb-1 fw-bold text-info text-uppercase" style="font-size: 0.75rem;">Tratamiento:</p>
+                    <p class="text-muted border-start border-3 ps-2">${trat || 'Sin registro'}</p>
+                </div>
+            `,
+            confirmButtonColor: '#2c8a93',
+            confirmButtonText: 'Entendido'
+        });
+    }
+</script>
+{% endblock %}

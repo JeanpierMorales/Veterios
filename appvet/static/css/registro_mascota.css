@@ -1,0 +1,106 @@
+.full-split-wrapper {
+    margin: -3rem !important;
+    display: flex;
+    height: calc(100vh - 75px); 
+    overflow: hidden;
+    background-color: #f8fafc; 
+}
+
+.expert-image-side {
+    flex: 1.2;
+    position: relative;
+    background-color: #000;
+}
+
+    .expert-image-side img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* AJUSTE: 14% desplaza la imagen para centrar a la niña y al perro */
+        object-position: 14% center;
+        filter: contrast(1.1) brightness(1.05);
+        image-rendering: -webkit-optimize-contrast; 
+        image-rendering: crisp-edges;
+    }
+
+.expert-image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6rem 4rem 4rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+    color: white;
+}
+
+/* Sección de Formulario */
+.expert-form-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 5rem;
+    background: white;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.05); 
+}
+
+.form-header-group {
+    width: 100%;
+    max-width: 420px;
+    margin-bottom: 3.5rem; 
+}
+
+.title-vetcare {
+    color: #2c8a93; 
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-top: -20px;
+}
+
+.input-premium {
+    border: 2px solid #cbd5e1 !important;
+    background-color: #e2e8f0 !important; 
+    border-radius: 15px !important;
+    padding: 16px 20px !important;
+    color: #1e293b !important; 
+    transition: all 0.3s ease;
+}
+
+    .input-premium:focus {
+        background-color: #ffffff !important;
+        border-color: #2c8a93 !important;
+        box-shadow: 0 10px 25px rgba(44, 138, 147, 0.2) !important;
+    }
+
+
+.btn-finalizar-expert {
+    background: #ff9d42 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 15px !important;
+    padding: 18px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1px;
+    transition: all 0.3s ease !important;
+}
+
+    .btn-finalizar-expert:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(255, 157, 66, 0.4) !important;
+    }
+
+.btn-volver-panel {
+    color: #94a3b8 !important;
+    text-decoration: none !important;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+    .btn-volver-panel:hover {
+        background-color: #f1f5f9;
+        color: #2c8a93 !important;
+    }

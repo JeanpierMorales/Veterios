@@ -1,0 +1,75 @@
+{% extends 'appvet/shared/base.html' %}
+{% load static %}
+
+{% block title %}Promociones - VETERIOS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    {# CABECERA #}
+    <div class="text-center mb-5">
+        <h1 class="display-3 fw-bold" style="color: #3e929a;">Beneficios en Clínica</h1>
+        <p class="fs-4 text-muted">Aprovecha estos beneficios visitándonos en nuestro local físico de <strong>VETERIOS</strong>.</p>
+    </div>
+
+    <div class="row g-4">
+        {# OFERTA: JUGUETES Y ACCESORIOS #}
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-lg rounded-5 overflow-hidden bg-info text-white">
+                <div class="card-body p-5">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <span class="badge bg-white text-info mb-2 fw-bold">DIVERSIÓN</span>
+                            <h2 class="fw-bold display-5">3x2 en Juguetes</h2>
+                            <p class="fs-5 mt-3">Lleva 3 juguetes para tu engreído y paga solo 2. ¡Válido para todas las marcas en tienda!</p>
+                        </div>
+                        <i class="bi bi-controller display-1 opacity-25"></i>
+                    </div>
+                    <div class="mt-4 pt-3 border-top border-white border-opacity-25">
+                        <small>*Promoción válida solo para compras presenciales.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# OFERTA: NUTRICIÓN PREMIUM #}
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-lg rounded-5 overflow-hidden bg-dark text-white border-start border-5 border-warning">
+                <div class="card-body p-5">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <span class="badge bg-warning text-dark mb-2 fw-bold">NUTRICIÓN</span>
+                            <h2 class="fw-bold display-5">Comida al Costo</h2>
+                            <p class="fs-5 mt-3">En sacos mayores a 10kg, recibe un <strong>15% de descuento directo</strong> al recogerlo en clínica.</p>
+                        </div>
+                        <i class="bi bi-basket3-fill display-1 opacity-25"></i>
+                    </div>
+                    <div class="mt-4 pt-3 border-top border-secondary">
+                        <small>*Aplica para Hill's, ProPlan y Royal Canin.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# OFERTA: PACK VACUNACIÓN #}
+        <div class="col-12">
+            <div class="card border-0 shadow-lg rounded-5 overflow-hidden">
+                <div class="row g-0 align-items-center">
+                    <div class="col-md-5 bg-primary text-white p-5 text-center" style="background-color: #3e929a !important;">
+                        <i class="bi bi-shield-plus" style="font-size: 8rem;"></i>
+                        <h2 class="fw-bold mt-3">Protección Total</h2>
+                    </div>
+                    <div class="col-md-7 p-5">
+                        <span class="badge bg-primary text-white mb-2 px-3 py-2 fw-bold" style="background-color: #3e929a !important;">PREVENCIÓN</span>
+                        <h2 class="fw-bold display-6">Campaña de Vacunación</h2>
+                        <p class="fs-5 text-muted">Por la aplicación de su vacuna Séxtuple o Triple Felina, la <strong>desparasitación externa es GRATIS</strong> en el local.</p>
+                        <ul class="list-unstyled mt-3 text-muted">
+                            <li><i class="bi bi-check-lg text-info me-2"></i>Incluye revisión de peso y temperatura.</li>
+                            <li><i class="bi bi-check-lg text-info me-2"></i>Certificado de vacunación físico.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

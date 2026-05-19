@@ -1,0 +1,98 @@
+{% extends 'appvet/shared/base.html' %}
+{% load static %}
+
+{% block title %}Configuración{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-5">
+    <div class="d-flex align-items-center gap-3 mb-5">
+        <h2 class="fw-bold m-0" style="color: #3e929a;">Configuración de Cuenta</h2>
+    </div>
+
+    <form action="{% url 'actualizar_configuracion' %}" method="post">
+        {% csrf_token %}
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+                    <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-person-vcard me-2 text-primary"></i>Datos Personales</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted">Nombre Completo</label>
+                            <input type="text" name="nombre" class="form-control bg-light border-0 p-3 rounded-3" value="{{ usuario.nombre }}">
+                        </div>
+                        <div class="col-md-6">
+                             <label class="form-label small fw-bold text-muted">Correo Electrónico</label>
+                            <input type="email" class="form-control bg-light border-0 p-3 rounded-3" value="{{ usuario.email }}" readonly style="cursor: not-allowed; opacity: 0.7;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted">Teléfono de contacto</label>
+                            <input type="text" name="telefono" class="form-control bg-light border-0 p-3 rounded-3" value="{{ usuario.telefono }}" placeholder="+51 999 999 999">
+                        </div>
+                    </div>
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-naranja-figma px-5 py-2 fw-bold shadow-sm">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+
+             <div class="col-lg-4">
+                <div class="card border-0 shadow-sm p-4 rounded-4 mb-4" style="background: linear-gradient(145deg, #243046, #1a2536); color: white;">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-shield-lock me-2 text-warning"></i>Seguridad</h5>
+                    <p class="small text-white-50 mb-4">Protege tu cuenta actualizando tu contraseña periódicamente.</p>
+                    
+                    <button type="button" class="btn btn-outline-light w-100 fw-bold border-2 rounded-3" data-bs-toggle="modal" data-bs-target="#modalPassword">
+                        Cambiar Contraseña
+                    </button>
+                </div>
+            </div>
+        </div>
+     </form>
+</div>
+
+<div class="modal fade" id="modalPassword" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 p-4">
+                <h5 class="fw-bold m-0">Cambiar Contraseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'cambiar_password' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body p-4 pt-0">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Contraseña Actual</label>
+                        <input type="password" name="currentPassword" class="form-control bg-light border-0 p-3 rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Nueva Contraseña</label>
+                        <input type="password" name="newPassword" class="form-control bg-light border-0 p-3 rounded-3" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light px-4 fw-bold" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-naranja-figma px-4 fw-bold shadow-sm">Actualizar Ahora</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    /*
+    document.addEventListener("DOMContentLoaded", function() {
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    title: '{% if message.tags == "success" %}¡Logrado!{% else %}Atención{% endif %}',
+                    text: '{{ message }}',
+                    icon: '{{ message.tags }}', // asume que tus messages.success mandan icon success, o ajustalo
+                    confirmButtonColor: '{% if message.tags == "success" %}#e67e22{% else %}#d33{% endif %}'
+                });
+            {% endfor %}
+        {% endif %}
+    });*/
+</script>
+{% endblock %}

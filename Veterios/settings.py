@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'Veterios.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'veterios_db',
+        'USER': 'root',
+        'PASSWORD': 'hachiko2025',  
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
@@ -103,9 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'es-pe'  # Español de Perú (o 'es-es')
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
@@ -116,3 +119,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Esta línea le dice a Django dónde están tus CSS/JS/IMG de desarrollo
+STATICFILES_DIRS = [
+    BASE_DIR / 'appvet' / 'static',
+]
+
+# Configuración para archivos que suban los usuarios (fotos de mascotas)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
+# Si un usuario intenta entrar a /admin/ sin estar logueado, lo manda aquí
+LOGIN_URL = 'login' 
+
+# A dónde va el usuario justo después de loguearse
+LOGIN_REDIRECT_URL = 'dashboard_admin' 
+
+# A dónde va después de cerrar sesión
+LOGOUT_REDIRECT_URL = 'login'

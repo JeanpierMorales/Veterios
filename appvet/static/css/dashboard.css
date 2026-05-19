@@ -1,0 +1,76 @@
+/* Colores de fondo */
+.gradient-blue {
+    background: linear-gradient(45deg, #3e929a, #2c6e75) !important;
+}
+
+.gradient-orange {
+    background: linear-gradient(45deg, #ff9800, #f57c00) !important;
+}
+
+.gradient-green {
+    background: linear-gradient(45deg, #4caf50, #388e3c) !important;
+}
+
+/* Caja de iconos en las cards */
+.stat-icon-box {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Efectos de las tarjetas  */
+.card-stat {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: default;
+    border: none !important;
+}
+
+    .card-stat:hover {
+        transform: scale(1.02);
+    }
+
+/* Estado del Sistema (Punto que parpadea) */
+.pulse-green {
+    box-shadow: 0 0 0 rgba(76, 175, 80, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    }
+}
+
+/* Botones de acción del Dashboard */
+.action-btn-dashboard {
+    background: #ffffff;
+    border: 2px solid #f0f0f0 !important;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+}
+
+    .action-btn-dashboard:hover {
+        border-color: var(--accent-vibrant) !important;
+        background: #f8fdff !important;
+        transform: translateX(8px);
+    }
+
+.action-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
