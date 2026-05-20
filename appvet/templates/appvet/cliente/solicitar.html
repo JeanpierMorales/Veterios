@@ -1,4 +1,4 @@
-{% extends 'appvet/shared/base.html' %}
+{% extends 'appvet/shared/base_cliente.html' %}
 {% load static %}
 
 {% block title %}Solicitar Cita{% endblock %}
@@ -16,7 +16,7 @@
                     <select name="mascota_id" class="form-select border-0 bg-light py-3 rounded-3 shadow-sm" required>
                         <option value="">Seleccione su mascota</option>
                         {% for mascota in mascotas %}
-                            <option value="{{ mascota.id }}">{{ mascota.nombre }}</option>
+                            <option value="{{ mascota.id }}">{{ mascota.nombre }} ({{ mascota.especie }})</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -27,8 +27,7 @@
                         <option value="">Seleccione el tipo de servicio</option>
                         <option value="Consulta General">Consulta General</option>
                         <option value="Vacunación">Vacunación</option>
-                        <option value="Baño y Corte">Baño y Corte</option>
-                    </select>
+                        <option value="Grooming / Baño">Grooming / Baño</option> </select>
                 </div>
 
                 <div class="mb-4">
@@ -41,8 +40,19 @@
                     <select name="horario" class="form-select border-0 bg-light py-3 rounded-3 shadow-sm" required>
                         <option value="">Horario</option>
                         <option value="09:00 AM">09:00 AM</option>
+                        <option value="09:30 AM">09:30 AM</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="10:30 AM">10:30 AM</option>
                         <option value="11:00 AM">11:00 AM</option>
+                        <option value="11:30 AM">11:30 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="02:00 PM">02:00 PM</option>
+                        <option value="02:30 PM">02:30 PM</option>
                         <option value="03:00 PM">03:00 PM</option>
+                        <option value="03:30 PM">03:30 PM</option>
+                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="04:30 PM">04:30 PM</option>
+                        <option value="05:00 PM">05:00 PM</option>
                     </select>
                 </div>
             </div>
@@ -63,23 +73,39 @@
 </div>
 {% endblock %}
 
-
-
 {% block scripts %}
-#<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    /* Integración con el sistema de Mensajes de Django
-    {% if messages %}
+{% if messages %}
+    <div id="django-messages" style="display: none;">
         {% for message in messages %}
-            Swal.fire({
-                title: '{% if message.tags == "success" %}¡Logrado!{% elif message.tags == "error" %}¡Atención!{% else %}Aviso{% endif %}',
-                text: '{{ message }}',
-                icon: '{% if message.tags == "error" %}warning{% else %}{{ message.tags }}{% endif %}'
-            });
+            <div class="django-msg" data-tags="{{ message.tags }}" data-text="{{ message }}"></div>
         {% endfor %}
-    {% endif %}
-    */
+    </div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Ahora JavaScript se mantiene limpio y libre de código de servidor
+    document.addEventListener("DOMContentLoaded", function() {
+        const msgContainer = document.getElementById("django-messages");
+        
+        if (msgContainer) {
+            const elements = msgContainer.getElementsByClassName("django-msg");
+            
+            Array.from(elements).forEach(function(el) {
+                const tags = el.getAttribute("data-tags");
+                const text = el.getAttribute("data-text");
+                
+                const isSuccess = (tags === "success");
+                
+                Swal.fire({
+                    title: isSuccess ? "¡Logrado!" : "¡Atención!",
+                    text: text,
+                    icon: isSuccess ? "success" : "warning",
+                    confirmButtonColor: '#3e929a'
+                });
+            });
+        }
+    });
 </script>
 {% endblock %}
-
-*/

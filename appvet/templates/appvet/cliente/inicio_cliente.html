@@ -62,12 +62,12 @@
         </div>
 
         <div class="d-flex gap-3 justify-content-end mt-4">
-            <a href="#" class="btn btn-naranja-figma shadow-sm rounded-pill px-4" style="background-color: #ff9f43; color: white; font-weight: bold;">
+            <a href="{% url 'agregar_mascota' %}" class="btn btn-naranja-figma shadow-sm rounded-pill px-4" style="background-color: #ff9f43; color: white; font-weight: bold; text-decoration: none;">
                 Agregar una mascota +
             </a>
             
             {% if total_mascotas > 6 %}
-                <a href="#" class="btn btn-outline-secondary rounded-pill px-4">
+                <a href="{% url 'mis_mascotas' %}" class="btn btn-outline-secondary rounded-pill px-4">
                     Ver todas ({{ total_mascotas }})
                 </a>
             {% endif %}

@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.db import connection
 from datetime import date, datetime
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.admin.views.decorators import staff_member_required
 
 # ==========================================
@@ -449,28 +450,41 @@ def solicitar_cita(request):
 
 @login_required(login_url='login')
 def guardar_cita(request):
+    # SOLUCIÓN: Importamos 'messages' al inicio de la función para que esté disponible en todo el bloque
+    from django.contrib import messages
+    
     if request.method == 'POST':
-        mascota_id = request.POST.get('MascotaId')
-        servicio = request.POST.get('Servicio')
-        horario = request.POST.get('Horario')
-        fecha_str = request.POST.get('Fecha')
+        mascota_id = request.POST.get('mascota_id')
+        servicio = request.POST.get('servicio')
+        horario = request.POST.get('horario')
+        fecha_str = request.POST.get('fecha')
         
-        if not servicio or not horario or not fecha_str:
-            messages.error(request, "Debes seleccionar un servicio, fecha y un horario.")
+        if not mascota_id or not servicio or not horario or not fecha_str:
+            messages.error(request, "Por favor, complete todos los campos obligatorios.")
             return redirect('cliente_solicitar')
             
-        fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
-        mascota_sel = get_object_or_404(Mascota, id=mascota_id, usuario=request.user)
-        
-        # Proceso normal de guardado equivalente a tu C#
-        Cita.objects.create(
-            mascota=mascota_sel,
-            servicio=servicio,
-            fecha=fecha_obj,
-            horario=horario,
-            estado="Pendiente"
-        )
-        messages.success(request, "Tu cita ha sido registrada exitosamente.")
+        try:
+            fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            mascota_sel = get_object_or_404(Mascota, id=mascota_id, usuario=request.user)
+            
+            # Creación limpia en la base de datos MySQL
+            Cita.objects.create(
+                mascota=mascota_sel,
+                servicio=servicio,
+                fecha=fecha_obj,
+                horario=horario,
+                estado="Pendiente"
+            )
+            
+            # Ahora funcionará perfecto porque 'messages' ya está definido globalmente en la función
+            messages.success(request, "Tu cita ha sido registrada exitosamente.")
+            return redirect('cliente_citas')
+            
+        except Exception as e:
+            print(f"Error al insertar cita: {e}")
+            messages.error(request, "No se pudo registrar la cita. Verifique los datos.")
+            return redirect('cliente_solicitar')
+            
     return redirect('cliente_solicitar')
 
 
