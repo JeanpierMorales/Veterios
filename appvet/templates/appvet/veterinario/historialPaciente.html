@@ -1,4 +1,4 @@
-{% extends "appvet/layout_veterinario.html" %}
+{% extends "appvet/shared/base_veterinario.html" %}
 
 {% block title %}Historial Clínico{% endblock %}
 
@@ -11,7 +11,7 @@
         </div>
         <div class="col-md-6">
             {# El formulario de búsqueda apunta a la misma vista #}
-            <form method="get" action="{% url 'historial_clinico' %}" class="d-flex shadow-sm rounded-pill overflow-hidden bg-white border">
+            <form method="get" action="{% url 'historial_pacientes' %}" class="d-flex shadow-sm rounded-pill overflow-hidden bg-white border">
                 <input type="text" name="searchString" class="form-control border-0 px-4 py-2 shadow-none" placeholder="Buscar por mascota o dueño..." value="{{ request.GET.searchString }}">
                 <button type="submit" class="btn btn-info px-4 text-white">
                     <i class="bi bi-search"></i>
@@ -48,7 +48,7 @@
                                     <span class="fw-bold text-dark">{{ item.mascota.nombre }}</span>
                                 </div>
                             </td>
-                            <td><span class="text-muted small">{{ item.mascota.usuario.nombre }}</span></td>
+                            <td><span class="text-muted small fw-bold text-dark">{{ item.mascota.usuario.first_name|default:item.mascota.usuario.username }}</span></td>
                             <td>
                                 <div class="text-truncate" style="max-width: 180px;" title="{{ item.diagnostico }}">
                                     {{ item.diagnostico }}
@@ -61,7 +61,7 @@
                             </td>
                             <td class="text-center px-4">
                                 {# URL dinámica al detalle de la mascota #}
-                                <a href="{% url 'detalle_mascota' item.mascota.id %}"
+                                <a href="{% url 'detalle_paciente' item.mascota.id %}"
                                    class="btn btn-info btn-sm rounded-pill px-3 text-white fw-bold shadow-sm">
                                     <i class="bi bi-journal-text me-1"></i> VER EXPEDIENTE
                                 </a>

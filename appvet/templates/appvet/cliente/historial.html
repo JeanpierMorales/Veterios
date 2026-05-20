@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cita in historial_citas %}
+                        {% for cita in historial_citas %}
                         <tr>
                             <td class="ps-4 fw-bold">{{ cita.mascota.nombre }}</td>
                             <td>{{ cita.servicio }}</td>
@@ -40,22 +40,23 @@
                             <td>{{ cita.veterinario.nombre|default:"Atención General" }}</td>
                             <td>
                                 <span class="badge rounded-pill {% if cita.estado == 'Completada' %}bg-success{% else %}bg-danger{% endif %}">
-                                   {{ cita.estado }}
+                                    {{ cita.estado }}
                                 </span>
                             </td>
                             <td class="pe-4 text-center">
-                                <span id="diag-{{ cita.id }}" style="display:none">{{ cita.historia_clinica.diagnostico|default:"Sin diagnóstico registrado" }}</span>
-                                <span id="trat-{{ cita.id }}" style="display:none">{{ cita.historia_clinica.tratamiento|default:"Sin tratamiento registrado" }}</span>
+                                {# CORREGIDO: Ahora lee las variables inyectadas desde el backend de Django #}
+                                <span id="diag-{{ cita.id }}" style="display:none">{{ cita.diagnostico_txt }}</span>
+                                <span id="trat-{{ cita.id }}" style="display:none">{{ cita.tratamiento_txt }}</span>
 
                                 <button class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalDetalleCita"
                                         onclick="mostrarAtencion('{{ cita.id }}', '{{ cita.mascota.nombre }}', '{{ cita.servicio }}')">
                                     Ver Detalle
-                                </button>
+                                 </button>
                             </td>
                         </tr>
-                    {% endfor %}
+                        {% endfor %}
                 </tbody>
              </table>
         </div>

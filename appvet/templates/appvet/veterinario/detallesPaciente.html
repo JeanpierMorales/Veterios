@@ -1,4 +1,4 @@
-{% extends "appvet/layout_veterinario.html" %} 
+{% extends "appvet/shared/base_veterinario.html" %}
 
 {% block title %}Expediente de {{ mascota.nombre }}{% endblock %}
 
@@ -12,7 +12,7 @@
                 </div>
                 <div class="ms-4">
                     <h2 class="fw-bold m-0">{{ mascota.nombre }}</h2>
-                    <p class="text-info mb-0 small text-uppercase fw-bold">Dueño: {{ mascota.usuario.nombre }}</p>
+                    <p class="text-info mb-0 small text-uppercase fw-bold">Dueño: {{ mascota.usuario.first_name }}</p>
                     <span class="badge bg-white bg-opacity-10 mt-2">{{ mascota.especie }} / {{ mascota.raza }}</span>
                 </div>
             </div>
@@ -25,9 +25,32 @@
                 <div class="card-body">
                     <h5 class="fw-bold mb-3 border-bottom pb-2">Datos Generales</h5>
                     <ul class="list-unstyled small">
-                        <li class="mb-2 text-muted"><i class="bi bi-calendar-event me-2"></i><strong>Edad:</strong> {{ mascota.edad }} años</li>
-                        <li class="mb-2 text-muted"><i class="bi bi-gender-ambiguous me-2"></i><strong>Sexo:</strong> {{ mascota.sexo }}</li>
-                        <li class="mb-2 text-muted"><i class="bi bi-telephone me-2"></i><strong>Contacto:</strong> {{ mascota.usuario.phone_number }}</li>
+                        {# 1. CÁLCULO DE LA EDAD (Si da 0, mostrará 'Cachorro / Menor a 1 año') #}
+                        <li class="mb-2 text-muted">
+                            <i class="bi bi-calendar-event me-2"></i><strong>Edad:</strong> 
+                            {% if mascota.edad > 0 %}
+                                {{ mascota.edad }} años
+                            {% else %}
+                                Cachorro (Menor a 1 año)
+                            {% endif %}
+                        </li>
+
+                        {# 2. MOSTRAR LA FECHA REAL GUARDADA #}
+                        <li class="mb-2 text-muted">
+                            <i class="bi bi-calendar-date me-2"></i><strong>F. Nacimiento:</strong> 
+                            {{ mascota.fecha_nacimiento|date:"d/m/Y" }}
+                        </li>
+
+                        {# 3. SEXO CORREGIDO (Usa |default por si quedó vacío en el registro) #}
+                        <li class="mb-2 text-muted">
+                            <i class="bi bi-gender-ambiguous me-2"></i><strong>Sexo:</strong> 
+                            {{ mascota.sexo|default:"No registrado" }}
+                        </li>
+
+                        <li class="mb-2 text-muted">
+                            <i class="bi bi-envelope me-2"></i><strong>Correo:</strong> 
+                            {{ mascota.usuario.email }}
+                        </li>
                     </ul>
                     <hr>
                     <div class="d-grid">

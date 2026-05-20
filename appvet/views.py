@@ -325,7 +325,19 @@ def guardar_cita_seguimiento(request):
         messages.success(request, "Cita de seguimiento agendada con éxito.")
     return redirect('gestion_citas')
 
-
+@staff_member_required(login_url='login')
+def ver_expediente(request, mascota_id):
+    # 1. Traemos la mascota específica con sus datos y su dueño
+    mascota = get_object_or_404(Mascota.objects.select_related('usuario'), id=mascota_id)
+    
+    # 2. Traemos TODAS las atenciones médicas que ha tenido esta mascota en su vida
+    atenciones_pasadas = HistoriaClinica.objects.filter(mascota_id=mascota_id).order_by('-fecha_atencion')
+    
+    context = {
+        'mascota': mascota,
+        'atenciones': atenciones_pasadas
+    }
+    return render(request, 'appvet/veterinario/ver_expediente.html', context)
 
 
 
@@ -397,12 +409,18 @@ def inicio_cliente_view(request):
         mascota__usuario=request.user, 
         fecha=hoy
     ).order_by('horario')
-    
+
+# 3. Traer el historial médico real (¡ESTO ES LO QUE BUSCA TU TABLA DE ABAJO!)
+    historial_medico = HistoriaClinica.objects.filter(
+        mascota__usuario=request.user
+    ).order_by('-fecha_atencion')  # De la más reciente a la más antigua
+
     context = {
         'title': 'Inicio',  # <-- Mantiene el título para el header_cliente.html
         'mascotas': mascotas,
         'total_mascotas': mascotas.count(),
-        'citas_hoy': citas_hoy
+        'citas_hoy': citas_hoy,
+        'historial_medico': historial_medico
     }
     return render(request, 'appvet/cliente/inicio_cliente.html', context)
 
@@ -412,7 +430,6 @@ def agregar_mascota(request):
     # Pasamos el title para mantener consistente la interfaz
     return render(request, 'appvet/cliente/agregar_mascota.html', {'title': 'Agregar Mascota'})
 
-
 @login_required(login_url='login')
 def registrar_mascota(request):
     if request.method == 'POST':
@@ -420,14 +437,27 @@ def registrar_mascota(request):
         especie = request.POST.get('especie')
         raza = request.POST.get('raza')
         
-        # Guardamos la nueva mascota amarrada a la cuenta de auth_user actual
+        # --- AGREGA ESTOS CAMPOS FALTANTES ---
+        sexo = request.POST.get('sexo')  # Captura lo que envíe el select/input
+        fecha_nacimiento_str = request.POST.get('fecha_nacimiento')
+        
+        # Procesar la fecha si viene del formulario, si no, usar la de hoy
+        fecha_nacimiento_obj = date.today()
+        if fecha_nacimiento_str:
+            try:
+                fecha_nacimiento_obj = datetime.strptime(fecha_nacimiento_str, '%Y-%m-%d').date()
+            except ValueError:
+                fecha_nacimiento_obj = date.today()
+
+        # Guardamos la nueva mascota con el set completo de datos
         Mascota.objects.create(
             nombre=nombre,
             especie=especie,
             raza=raza,
+            sexo=sexo,  # <-- Ahora sí se guarda en MySQL
+            fecha_nacimiento=fecha_nacimiento_obj,  # <-- Se guarda la fecha real
             usuario=request.user
         )
-        # CORREGIDO: Redirige exactamente al name definido en tus urls.py
         return redirect('inicio_cliente')
         
     return redirect('agregar_mascota')
@@ -494,13 +524,36 @@ def cliente_citas(request):
 
 @login_required(login_url='login')
 def cliente_historial(request):
-    # Filtramos únicamente los registros que el veterinario ya cerró como completados
-    citas_completadas = Cita.objects.filter(
-        mascota__usuario=request.user, 
-        estado="Completada"
+    """
+    Trae las citas completadas del cliente logueado junto con su diagnóstico y tratamiento
+    """
+    # Buscamos las citas completadas o canceladas del usuario actual
+    # Traemos 'mascota', 'veterinario' y pre-cargamos la historia clínica asociada
+    citas_completadas = Cita.objects.select_related(
+        'mascota', 
+        'veterinario'
+    ).prefetch_related(
+        'historias_clinicas'  
+    ).filter(
+        mascota__usuario=request.user,
+        estado__in=['Completada', 'Cancelada']
     ).order_by('-fecha')
-    return render(request, 'appvet/cliente/historial.html', {'citas': citas_completadas})
 
+    # Inyectamos el diagnóstico y tratamiento en caliente a cada cita
+    for cita in citas_completadas:
+        # Obtenemos la primera historia clínica asociada a esta cita (si existe)
+        historia = cita.historias_clinicas.first()
+        if historia:
+            cita.diagnostico_txt = historia.diagnostico
+            cita.tratamiento_txt = historia.tratamiento
+        else:
+            cita.diagnostico_txt = "Sin diagnóstico registrado en la atención."
+            cita.tratamiento_txt = "Sin tratamiento registrado."
+
+    context = {
+        'historial_citas': citas_completadas  # Mantiene el nombre exacto de tu variable HTML
+    }
+    return render(request, 'appvet/cliente/historial.html', context)
 
 @login_required(login_url='login')
 def cliente_configuracion(request):
@@ -586,10 +639,10 @@ def veterinario_inicio(request):
     else:
         fecha_base = hoy
 
-    # Rangos del calendario médico (8 AM a 7 PM)
+
     rango_horas = list(range(8, 20)) 
 
-    # Consultar citas base con select_related (.Include() en EF)
+
     citas_query = Cita.objects.select_related(
         'mascota',
         'mascota__usuario',
@@ -600,8 +653,9 @@ def veterinario_inicio(request):
         estado='Cancelada'
     )
 
-    # Configuración de vistas, rangos de días y paginación lateral (< Hoy >)
+
     if vista == "Semana":
+
         diff = (fecha_base.weekday() - 0) % 7
         lunes = fecha_base - timedelta(days=diff)
         domingo = lunes + timedelta(days=7)
@@ -625,11 +679,11 @@ def veterinario_inicio(request):
         inicio_semana = None
         fin_semana = None
 
-    # Inyección de propiedades calculadas en caliente para emular tu lógica de C#
+
     citas_procesadas = []
+
     for cita in citas_query:
-        # 1. Resolver hora en entero para calcular posición vertical en la grilla
-        # Asumiendo formatos "09:00", "14:30", "11 AM", etc. Extraemos los primeros dígitos.
+
         hora_int = 8
         try:
             # Limpiamos caracteres comunes por si guardas "09:00" o "9:00"
@@ -639,8 +693,7 @@ def veterinario_inicio(request):
         except Exception:
             pass
 
-        # Cada bloque de 1 hora mide 60px en tu CSS. La grilla arranca a las 08:00 AM.
-        # top_px = (HoraCita - HoraInicio) * 60px + desfase por minutos opcional
+
         desfase_horas = hora_int - 8
         if desfase_horas < 0: 
             desfase_horas = 0
@@ -657,14 +710,14 @@ def veterinario_inicio(request):
             except Exception:
                 pass
 
-        # 2. Configuración de colores según la prioridad
+        # Configuración de colores según la prioridad
         color_prioridad = "#2c8a93" # Por defecto info / vet-primary
         if cita.prioridad == "Alta" or cita.es_emergencia:
             color_prioridad = "#dc3545" # Rojo danger
         elif cita.prioridad == "Media":
             color_prioridad = "#ffc107" # Amarillo warning
 
-        # Mapeamos un objeto dinámico idéntico al esperado por el frontend
+
         citas_procesadas.append({
             'id': cita.id,
             'fecha_dt': cita.fecha,
@@ -729,10 +782,8 @@ def detalle_paciente(request, id):
     )
     historias_ordenadas = mascota.historias_clinicas.all().order_by('-fecha_atencion')
 
-    context = {
-        'mascota': mascota,
-        'historias': historias_ordenadas
-    }
+    context = { 'mascota': mascota, 'historias': historias_ordenadas }
+
     return render(request, 'appvet/veterinario/detallesPaciente.html', context)
 
 
