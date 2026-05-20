@@ -8,6 +8,10 @@ from django.contrib.auth.decorators import login_required
 from django.db import connection
 from datetime import date, datetime
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q
+from django.http import HttpResponseForbidden
+from datetime import date, datetime, timedelta
+
 
 # ==========================================
 # VISTAS PÚBLICAS 
@@ -47,13 +51,6 @@ def login_view(request):
             messages.error(request, "El correo electrónico o la contraseña son incorrectos.")
             
     return render(request, 'appvet/account/login.html')
-
-
-
-
-
-
-
 
 
 
@@ -555,9 +552,211 @@ def cambiar_password(request):
 
 #VETERINARIO
 
-# Agrégalo al final de tu appvet/views.py
-@login_required(login_url='login')
-def inicio_veterinario_view(request):
-    # Por ahora renderizamos una plantilla básica para el veterinario
-    # Más adelante buscaremos sus citas asignadas en MySQL
-    return render(request, 'appvet/veterinario/inicio_veterinario.html')
+# ===============================================================
+# PORTAL DEL VETERINARIO (MÓDULO MÉDICO)
+# ===============================================================
+
+@login_required
+def veterinario_inicio(request):
+    fecha_param = request.GET.get('fecha')
+    vista = request.GET.get('vista', 'Dia')
+
+    hoy = timezone.now().date()
+    
+    # Resolver Fecha Base (Equivalente al DateTime Base = fecha ?? DateTime.Today)
+    if fecha_param:
+        try:
+            fecha_base = datetime.strptime(fecha_param, '%Y-%m-%d').date()
+        except ValueError:
+            fecha_base = hoy
+    else:
+        fecha_base = hoy
+
+    # Rangos del calendario médico (8 AM a 7 PM)
+    rango_horas = list(range(8, 20)) 
+
+    # Consultar citas base con select_related (.Include() en EF)
+    citas_query = Cita.objects.select_related(
+        'mascota',
+        'mascota__usuario',
+        'veterinario'
+    ).filter(
+        veterinario__usuario_id=request.user.username
+    ).exclude(
+        estado='Cancelada'
+    )
+
+    # Configuración de vistas, rangos de días y paginación lateral (< Hoy >)
+    if vista == "Semana":
+        diff = (fecha_base.weekday() - 0) % 7
+        lunes = fecha_base - timedelta(days=diff)
+        domingo = lunes + timedelta(days=7)
+        
+        citas_query = citas_query.filter(fecha__gte=lunes, fecha__lt=domingo)
+        
+        dias_mostrados = [lunes + timedelta(days=i) for i in range(7)]
+        ancho_columna = 100 / 7
+        
+        fecha_anterior = (fecha_base - timedelta(days=7)).strftime('%Y-%m-%d')
+        fecha_siguiente = (fecha_base + timedelta(days=7)).strftime('%Y-%m-%d')
+        inicio_semana = lunes
+        fin_semana = lunes + timedelta(days=6)
+    else:
+        citas_query = citas_query.filter(fecha=fecha_base)
+        dias_mostrados = [fecha_base]
+        ancho_columna = 100
+        
+        fecha_anterior = (fecha_base - timedelta(days=1)).strftime('%Y-%m-%d')
+        fecha_siguiente = (fecha_base + timedelta(days=1)).strftime('%Y-%m-%d')
+        inicio_semana = None
+        fin_semana = None
+
+    # Inyección de propiedades calculadas en caliente para emular tu lógica de C#
+    citas_procesadas = []
+    for cita in citas_query:
+        # 1. Resolver hora en entero para calcular posición vertical en la grilla
+        # Asumiendo formatos "09:00", "14:30", "11 AM", etc. Extraemos los primeros dígitos.
+        hora_int = 8
+        try:
+            # Limpiamos caracteres comunes por si guardas "09:00" o "9:00"
+            hora_limpia = ''.join(c for c in cita.horario.split(':')[0] if c.isdigit())
+            if hora_limpia:
+                hora_int = int(hora_limpia)
+        except Exception:
+            pass
+
+        # Cada bloque de 1 hora mide 60px en tu CSS. La grilla arranca a las 08:00 AM.
+        # top_px = (HoraCita - HoraInicio) * 60px + desfase por minutos opcional
+        desfase_horas = hora_int - 8
+        if desfase_horas < 0: 
+            desfase_horas = 0
+            
+        top_px = desfase_horas * 60
+        
+        # Manejo de minutos ("10:30" -> baja 30px más)
+        if ":" in cita.horario:
+            try:
+                minutos_str = ''.join(c for c in cita.horario.split(':')[1] if c.isdigit())[:2]
+                if minutos_str:
+                    minutos_int = int(minutos_str)
+                    top_px += int(minutos_int * (60 / 60))
+            except Exception:
+                pass
+
+        # 2. Configuración de colores según la prioridad
+        color_prioridad = "#2c8a93" # Por defecto info / vet-primary
+        if cita.prioridad == "Alta" or cita.es_emergencia:
+            color_prioridad = "#dc3545" # Rojo danger
+        elif cita.prioridad == "Media":
+            color_prioridad = "#ffc107" # Amarillo warning
+
+        # Mapeamos un objeto dinámico idéntico al esperado por el frontend
+        citas_procesadas.append({
+            'id': cita.id,
+            'fecha_dt': cita.fecha,
+            'mascota_nombre': cita.mascota.nombre,
+            'horario': cita.horario,
+            'estado': cita.estado,
+            'top_px': top_px,
+            'color_prioridad': color_prioridad
+        })
+
+    context = {
+        'citas': citas_procesadas,
+        'fecha_actual': fecha_base,
+        'hoy_str': hoy.strftime('%Y-%m-%d'),
+        'fecha_anterior': fecha_anterior,
+        'fecha_siguiente': fecha_siguiente,
+        'vista': vista,
+        'rango_horas': rango_horas,
+        'dias_mostrados': dias_mostrados,
+        'ancho_columna': ancho_columna,
+        'inicio_semana': inicio_semana,
+        'fin_semana': fin_semana
+    }
+    return render(request, 'appvet/veterinario/inicio_veterinario.html', context)
+
+
+@login_required
+def historial_pacientes(request):
+    search_string = request.GET.get('searchString')
+    query = HistoriaClinica.objects.select_related('mascota', 'mascota__usuario')
+
+    if search_string:
+        query = query.filter(
+            Q(mascota__nombre__icontains=search_string) |
+            Q(mascota__usuario__first_name__icontains=search_string) |
+            Q(mascota__usuario__username__icontains=search_string)
+        )
+
+    historial = query.order_by('-fecha_atencion')
+    return render(request, 'appvet/veterinario/historialPaciente.html', {'historial': historial})
+
+
+@login_required
+def mis_consultas(request):
+    mis_atenciones = HistoriaClinica.objects.select_related(
+        'mascota',
+        'mascota__usuario',
+        'cita',
+        'cita__veterinario'
+    ).filter(
+        cita__veterinario__usuario_id=request.user.username
+    ).order_by('-fecha_atencion')
+
+    return render(request, 'appvet/veterinario/misConsultas.html', {'consultas': mis_atenciones})
+
+
+@login_required
+def detalle_paciente(request, id):
+    mascota = get_object_or_404(
+        Mascota.objects.select_related('usuario').prefetch_related('historias_clinicas'),
+        id=id
+    )
+    historias_ordenadas = mascota.historias_clinicas.all().order_by('-fecha_atencion')
+
+    context = {
+        'mascota': mascota,
+        'historias': historias_ordenadas
+    }
+    return render(request, 'appvet/veterinario/detallesPaciente.html', context)
+
+
+@login_required
+def finalizar_consulta(request, cita_id):
+    if request.method != 'POST':
+        return HttpResponseForbidden("Método no permitido")
+
+    cita = get_object_or_404(Cita.objects.select_related('mascota', 'veterinario'), id=cita_id)
+
+    if not cita.veterinario or cita.veterinario.usuario_id != request.user.username:
+        return HttpResponseForbidden("No tienes permisos para modificar esta consulta.")
+
+    diagnostico = request.POST.get('diagnostico')
+    tratamiento = request.POST.get('tratamiento')
+    proxima_cita_str = request.POST.get('proximaCitaSugerida')
+
+    proxima_cita = None
+    if proxima_cita_str:
+        try:
+            proxima_cita = datetime.strptime(proxima_cita_str, '%Y-%m-%d').date()
+        except ValueError:
+            pass
+
+    v_nombre = cita.veterinario.nombre if cita.veterinario else "Veterinario"
+
+    HistoriaClinica.objects.create(
+        mascota=cita.mascota,
+        cita=cita,
+        fecha_atencion=timezone.now(),
+        diagnostico=diagnostico,
+        tratamiento=tratamiento,
+        veterinario_nombre=v_nombre,
+        proxima_cita_sugerida=proxima_cita
+    )
+
+    cita.estado = 'Completada'
+    cita.save()
+
+    messages.success(request, "La consulta médica ha sido registrada con éxito.")
+    return redirect('veterinario_inicio')

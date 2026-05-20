@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     # Al entrar a la web, cargamos Quienes Somos por defecto
     path('', views.quienes_somos, name='index'), 
@@ -53,7 +54,31 @@ urlpatterns = [
 
 
     # 2. Ruta Veterinario (La que agregamos para el nuevo rol)
-    path('veterinario/inicio/', views.inicio_veterinario_view, name='inicio_veterinario'),
+    path(
+        'veterinario/inicio/',
+        views.veterinario_inicio,
+        name='veterinario_inicio'
+    ),
+    path(
+        'veterinario/historial/',
+        views.historial_pacientes,
+        name='historial_pacientes'
+    ),
+    path(
+        'veterinario/mis-consultas/',
+        views.mis_consultas,
+        name='mis_consultas'
+    ),
+    path(
+        'veterinario/paciente/<int:id>/',
+        views.detalle_paciente,
+        name='detalle_paciente'
+    ),
+    path(
+        'veterinario/finalizar-consulta/<int:cita_id>/',
+        views.finalizar_consulta,
+        name='finalizar_consulta'
+    ),
 
     # 3. Ruta Cliente
     path('inicio/', views.inicio_cliente_view, name='inicio_cliente'),
@@ -75,4 +100,8 @@ urlpatterns = [
     path('cliente/actualizar-configuracion/', views.actualizar_configuracion, name='actualizar_configuracion'),
     path('cliente/cambiar-password/', views.cambiar_password, name='cambiar_password'),
 
+
+    
+
 ]
+
