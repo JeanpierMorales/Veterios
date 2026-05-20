@@ -5,10 +5,9 @@
     </div>
 
     <nav class="sidebar-nav">
-        {# Capturamos el nombre de la ruta actual para manejar los estados activos #}
         {% with url_name=request.resolver_match.url_name %}
 
-        <a href="{% url 'inicio_cliente' %}" class="nav-item {% if url_name == 'inicio_cliente' %}active{% endif %}"></a>
+        <a href="{% url 'inicio_cliente' %}" class="nav-item {% if url_name == 'inicio_cliente' %}active{% endif %}">
             <div class="active-indicator"></div>
             <i class="bi bi-house-door-fill fs-4"></i>
             <span class="nav-text ms-3">Inicio</span>
