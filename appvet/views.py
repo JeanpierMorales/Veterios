@@ -557,30 +557,37 @@ def cliente_historial(request):
 
 @login_required(login_url='login')
 def cliente_configuracion(request):
-    return render(request, 'appvet/cliente/configuracion.html')
-
+    # Pasamos request.user directo como 'usuario' y agregamos el title para el header
+    context = {
+        'title': 'Configuración de Cuenta',
+        'usuario': request.user
+    }
+    return render(request, 'appvet/cliente/configuracion.html', context)
 
 
 @login_required(login_url='login')
 def actualizar_configuracion(request):
+    from django.contrib import messages
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         telefono = request.POST.get('telefono')
         
         usuario = request.user
         usuario.first_name = nombre
+        # Guardamos el teléfono en last_name para no romper el modelo nativo de auth_user
+        usuario.last_name = telefono 
         usuario.save()
         
-        # Nota: Si manejas un perfil extendido para el teléfono en tu modelo, lo guardas aquí
-        messages.success(request, "Tus datos han sido actualizados con éxito.", extra_tags='mensaje_config')
+        messages.success(request, "Tus datos personales han sido actualizados con éxito.")
         return redirect('cliente_configuracion')
         
-    messages.error(request, "No se pudieron guardar los cambios.")
+    messages.error(request, "No se pudieron procesar los cambios.")
     return redirect('cliente_configuracion')
 
 
 @login_required(login_url='login')
 def cambiar_password(request):
+    from django.contrib import messages
     if request.method == 'POST':
         current_password = request.POST.get('currentPassword')
         new_password = request.POST.get('newPassword')
@@ -589,19 +596,16 @@ def cambiar_password(request):
         if usuario.check_password(current_password):
             usuario.set_password(new_password)
             usuario.save()
-            # Actualiza la sesión para que no se desloguee al cambiar clave
+            
+            # Sincroniza la sesión para evitar que el usuario se desloguee solo
             from django.contrib.auth import update_session_auth_hash
             update_session_auth_hash(request, usuario)
-            messages.success(request, "Contraseña actualizada correctamente.", extra_tags='mensaje_config')
+            
+            messages.success(request, "Contraseña actualizada correctamente.")
         else:
-            messages.error(request, "La contraseña actual es incorrecta o no cumple los requisitos.")
+            messages.error(request, "La contraseña actual es incorrecta o la nueva no cumple los requisitos.")
             
     return redirect('cliente_configuracion')
-
-
-
-
-
 
 
 

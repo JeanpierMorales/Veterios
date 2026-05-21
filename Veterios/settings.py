@@ -78,7 +78,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'veterios_db',
         'USER': 'root',
-        'PASSWORD': 'Franco@123',  
+        'PASSWORD': 'hachiko2025',  
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
