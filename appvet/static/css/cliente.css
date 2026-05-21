@@ -19,7 +19,8 @@ html, body {
     min-height: 100vh;
 }
 
-/*  SIDEBAR */
+/* SIDEBAR - CORREGIDO PARA EVITAR DESBORDES */
+
 .sidebar {
     width: var(--sidebar-w);
     background-color: var(--turquesa);
@@ -30,30 +31,43 @@ html, body {
     left: 0;
     top: 0;
     z-index: 1100;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Transición fluida para el colapso */
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-logo-container {
-    padding: 40px 10px;
-    text-align: center;
-    min-height: 180px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 20px !important;
+    text-align: center !important;
+    width: 100% !important;        /* CORREGIDO: Ocupa el 100% de la barra lateral */
+    max-width: 280px !important;    /* CORREGIDO: No se pasa de los 280px del sidebar */
+    box-sizing: border-box !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 120px !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease;
 }
 
 .sidebar-logo-big {
-    width: 300px;
-    max-width: 110%;
-    height: auto;
-    transition: transform 0.3s;
+    display: block !important;
+    width: 150px !important;      
+    max-width: 150px !important;  
+    
+    height: auto !important;
+    object-fit: contain !important;
+    margin: 0 auto !important;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
+/* Unificamos el margen superior en una sola clase limpia */
 .sidebar-nav {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    margin-top: 50px; /* Controla la altura cuando está maximizado */
+    transition: margin-top 0.3s ease;
 }
 
 .nav-item {
@@ -68,15 +82,15 @@ html, body {
     white-space: nowrap;
 }
 
-    .nav-item:hover {
-        background-color: var(--celeste-hover);
-        color: var(--turquesa) !important;
-    }
+.nav-item:hover {
+    background-color: var(--celeste-hover);
+    color: var(--turquesa) !important;
+}
 
-    .nav-item.active {
-        color: var(--naranja) !important;
-        font-weight: bold;
-    }
+.nav-item.active {
+    color: var(--naranja) !important;
+    font-weight: bold;
+}
 
 .active-indicator {
     position: absolute;
@@ -91,6 +105,9 @@ html, body {
 .nav-item.active .active-indicator {
     display: block;
 }
+
+
+
 
 /* CONTENIDO Y HEADER */
 .content-wrapper {
@@ -126,46 +143,54 @@ html, body {
 
 /* ESTADOS COLAPSADOS */
 
+/* ==========================================================================
+   ESTADOS COLAPSADOS - CORREGIDO
+   ========================================================================== */
+
 .sidebar-collapsed .sidebar {
-    width: var(--sidebar-collapsed);
+    width: var(--sidebar-collapsed) !important;
 }
 
 .sidebar-collapsed .content-wrapper {
-    margin-left: var(--sidebar-collapsed);
-    width: calc(100% - var(--sidebar-collapsed));
+    margin-left: var(--sidebar-collapsed) !important;
+    width: calc(100% - var(--sidebar-collapsed)) !important;
 }
-
 
 .sidebar-collapsed .nav-item {
     padding: 16px 0 !important;
-    justify-content: center;
+    justify-content: center !important;
 }
 
-    .sidebar-collapsed .nav-item i {
-        margin: 0 !important; 
-        font-size: 1.6rem; 
-    }
+.sidebar-collapsed .nav-item i {
+    margin: 0 !important; 
+    font-size: 1.6rem !important; 
+}
 
+/* Ocultamos el texto del menú */
+.sidebar-collapsed .nav-text {
+    display: none !important;
+}
 
-.sidebar-collapsed .nav-text,
+/* 🌟 CORRECCIÓN CRÍTICA DEL LOGO: Juntos sin espacio para que aplique el colapso */
 .sidebar-collapsed .sidebar-logo-big {
-    display: none;
+    width: 45px !important;      /* 🔴 EDITA AQUÍ si lo quieres más chico (Ej: 35px) */
+    max-width: 45px !important;  /* 🔴 Mantén este número igual al de arriba */
+    display: block !important;
 }
 
-
+/* Ajustamos su caja contenedora en modo mini */
 .sidebar-collapsed .sidebar-logo-container {
-    min-height: 100px;
-    padding: 20px 0;
-    display: flex;
-    justify-content: center;
+    min-height: 80px !important;
+    max-width: var(--sidebar-collapsed) !important;
+    padding: 10px 0 !important;
 }
 
 /* Ajuste de la rayita naranja para el modo mini */
-.sidebar-collapsed .nav-item.active::before {
-    height: 40px;
-    width: 6px;
+.sidebar-collapsed .nav-item.active .active-indicator {
+    height: 40px !important;
+    width: 6px !important;
+    display: block !important;
 }
-
 
 
 /* --- MEJORA DE HOVERS PARA BOTONES --- */

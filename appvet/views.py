@@ -465,14 +465,22 @@ def registrar_mascota(request):
 @login_required(login_url='login')
 def mis_mascotas(request):
     mascotas = Mascota.objects.filter(usuario=request.user)
-    return render(request, 'appvet/cliente/mis_mascotas.html', {'mascotas': mascotas})
+
+    
+    return render(request, 'appvet/cliente/mis_mascotas.html', {
+        'title': 'Mis Mascotas',
+        'mascotas': mascotas
+    })
 
 
 @login_required(login_url='login')
 def solicitar_cita(request):
     # Cargamos el combo-box del formulario con las mascotas del usuario logueado
     mascotas = Mascota.objects.filter(usuario=request.user)
-    return render(request, 'appvet/cliente/solicitar.html', {'mascotas': mascotas})
+    return render(request, 'appvet/cliente/solicitar.html', {
+        'title': 'Solicitar Cita',
+        'mascotas': mascotas
+    })
 
 
 @login_required(login_url='login')
@@ -519,7 +527,10 @@ def guardar_cita(request):
 def cliente_citas(request):
     # Equivalente a tu .Include(c => c.Mascota).OrderByDescending(c => c.Fecha)
     citas = Cita.objects.filter(mascota__usuario=request.user).order_by('-fecha')
-    return render(request, 'appvet/cliente/citas.html', {'citas': citas})
+    return render(request, 'appvet/cliente/citas.html', {
+        'title': 'Seguimiento de mis Citas',
+        'citas': citas
+    })
 
 
 @login_required(login_url='login')
@@ -551,7 +562,8 @@ def cliente_historial(request):
             cita.tratamiento_txt = "Sin tratamiento registrado."
 
     context = {
-        'historial_citas': citas_completadas  # Mantiene el nombre exacto de tu variable HTML
+        'title': 'Historial de Citas',
+        'historial_citas': citas_completadas  
     }
     return render(request, 'appvet/cliente/historial.html', context)
 
