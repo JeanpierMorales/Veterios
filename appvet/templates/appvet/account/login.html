@@ -19,7 +19,7 @@
         {# FORMULARIO DE REGISTRO #}
         <div class="form-box register-container text-center">
             <h1 class="fw-bold mb-5">Registro</h1>
-            <form action="{% url 'register' %}" method="post" id="registerForm">
+            <form action="{% url 'register' %}" method="post" id="registerForm" novalidate>
                 {% csrf_token %}
                 <div class="input-group-figma">
                     <i class="bi bi-person-fill"></i>
@@ -46,16 +46,23 @@
 
             {# MENSAJES DE ERROR DE DJANGO #}
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-danger d-flex align-items-center justify-content-center shadow-sm border-0 mb-4 fade show"
-                         style="border-radius: 15px; background-color: #fff5f5; color: #e53e3e; padding: 15px;">
-                        <i class="bi bi-exclamation-diamond-fill fs-4 me-3"></i>
-                        <div class="text-start">
-                            <strong class="d-block" style="font-size: 1rem;">Acceso Denegado</strong>
-                            <span style="font-size: 0.85rem;">{{ message }}</span>
-                        </div>
-                    </div>
+                <div class="messages-container mb-3">
+                    {% for message in messages %}
+                     <div class="alert {% if 'error' in message.tags or 'danger' in message.tags or 'Acceso' in message.message %}alert-danger{% else %}alert-success text-success-emphasis bg-success-subtle border-success-subtle{% endif %} d-flex align-items-center rounded-3 p-3 mb-2" role="alert" style="font-size: 0.85rem;">
+                         <i class="bi {% if 'error' in message.tags or 'danger' in message.tags %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %} me-2 fs-5"></i>
+                    <div>
+                        <strong class="d-block">
+                            {% if 'error' in message.tags or 'danger' in message.tags %}
+                               Acceso Denegado
+                            {% else %}
+                              Aviso del Sistema
+                            {% endif %}
+                        </strong>
+                     {{ message }}
+                     </div>
+                 </div>
                 {% endfor %}
+                </div>
             {% endif %}
 
             <form action="{% url 'login' %}" method="post">
@@ -100,7 +107,7 @@
     const loginBtn = document.getElementById('loginBtn');
     const registerForm = document.getElementById('registerForm');
 
-    // Movimiento de paneles
+    // Movimiento de paneles de Figma
     if (registerBtn && loginBtn) {
         registerBtn.addEventListener('click', () => container.classList.add("right-panel-active"));
         loginBtn.addEventListener('click', () => container.classList.remove("right-panel-active"));
@@ -111,13 +118,16 @@
         window.scrollTo(0, 0);
     }
 
-    // Validación de Registro
     if (registerForm) {
         registerForm.addEventListener('submit', function (e) {
-            const nombre = document.getElementById('regNombre').value;
+            const nombre = document.getElementById('regNombre').value.trim();
             const pass = document.getElementById('regPassword').value;
+            const email = document.getElementById('regEmail').value.trim();
+            
             const regexNombre = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+            // 1. Validar Nombre
             if (!regexNombre.test(nombre)) {
                 e.preventDefault();
                 Swal.fire({
@@ -129,6 +139,19 @@
                 return;
             }
 
+            
+            if (!regexEmail.test(email)) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Correo inválido',
+                    text: 'Por favor, ingresa una dirección de correo electrónico válida (ejemplo@correo.com).',
+                    icon: 'error',
+                    confirmButtonColor: '#3e929a'
+                });
+                return;
+            }
+
+            // 3. Validar Contraseña
             if (pass.length < 8) {
                 e.preventDefault();
                 Swal.fire({
@@ -141,7 +164,24 @@
         });
     }
 
+    
     document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.get('registro') === 'exito') {
+            Swal.fire({
+                title: '¡Registro Exitoso!',
+                text: 'Tu cuenta ha sido creada con éxito en VETERIOS. Ya puedes ingresar tus credenciales.',
+                icon: 'success',
+                confirmButtonColor: '#3e929a',
+                confirmButtonText: 'Entendido'
+            }).then(() => {
+            
+                window.history.replaceState({}, document.title, window.location.pathname);
+            });
+        }
+
+        
         const loginWrapper = document.getElementById('loginWrapper');
         if (loginWrapper) {
             const errorEnRegistro = loginWrapper.getAttribute('data-registro-error') === 'true';

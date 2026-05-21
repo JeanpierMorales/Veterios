@@ -12,6 +12,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.http import HttpResponseForbidden
 from datetime import date, datetime, timedelta
+from django.contrib.messages import get_messages
+import re
 
 
 # ==========================================
@@ -40,13 +42,13 @@ def login_view(request):
             
             # REDIRECCIONES CORRECTAS POR URL ABSOLUTA
             if user.is_superuser or user.is_staff:
-                return redirect('/admin/dashboard/')  # Fuerza ir al panel admin
+                return redirect('/admin/dashboard/')  
             
             elif Veterinario.objects.filter(usuario_id=user.username).exists():
-                return redirect('/veterinario/inicio/')  # Fuerza ir al panel médico
+                return redirect('/veterinario/inicio/') 
             
             else:
-                return redirect('/inicio/')  # Fuerza ir al espacio del cliente
+                return redirect('/inicio/') 
                 
         else:
             messages.error(request, "El correo electrónico o la contraseña son incorrectos.")
@@ -67,9 +69,21 @@ def ofertas(request):
 
 def register_view(request):
     if request.method == 'POST':
-        nombre_completo = request.POST.get('username')
-        correo = request.POST.get('email')
-        contrasena = request.POST.get('password')
+        nombre_completo = request.POST.get('username', '').strip()
+        correo = request.POST.get('email', '').strip()
+        contrasena = request.POST.get('password', '')
+        
+        # ---- Validaciones ---  
+
+
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', nombre_completo):
+            messages.error(request, "El nombre completo solo puede contener letras y espacios.", extra_tags='register')
+            return redirect('login')
+
+        
+        if len(contrasena) < 8:
+            messages.error(request, "La contraseña debe tener un mínimo de 8 caracteres.", extra_tags='register')
+            return redirect('login')
         
         if User.objects.filter(email=correo).exists():
             messages.error(request, "Este correo electrónico ya se encuentra registrado.", extra_tags='register')
@@ -87,12 +101,10 @@ def register_view(request):
             )
             nuevo_usuario.first_name = nombre_completo
             nuevo_usuario.save()
-            
-            auth_login(request, nuevo_usuario)
-            messages.success(request, "¡Tu cuenta ha sido creada con éxito! Bienvenido a VETERIOS.")
-            
-            # Al registrarse, es un cliente nuevo, va directo a su espacio de inicio
-            return redirect('/inicio/')
+
+            messages.success(request, "¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.", extra_tags='registro_ok')
+
+            return redirect('/login/?registro=ok')
             
         except Exception as e:
             messages.error(request, f"Hubo un problema al crear la cuenta: {str(e)}", extra_tags='register')
@@ -105,9 +117,17 @@ def register_view(request):
 
 
 def logout_view(request):
+    # 1. Recuperar los mensajes actuales para "limpiarlos" (vaciarlos) de la cola
+    storage = get_messages(request)
+    for message in storage:
+        pass # Al iterarlos, Django los marca como leídos y los borra de la cookie
+    
+    # 2. Proceder con el cierre de sesión nativo de Django
     auth_logout(request)
+    
+    # 3. Registrar únicamente el mensaje de salida correcto
     messages.info(request, "Has cerrado sesión correctamente.")
-    return redirect('quienes_somos')
+    return redirect('login')
 
 
 # ==========================================
