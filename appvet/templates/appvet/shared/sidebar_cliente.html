@@ -1,14 +1,17 @@
 {% load static %}
 <aside class="sidebar">
+    
     <div class="sidebar-logo-container">
-        <img src="{% static 'img/logovetcare.png' %}" class="sidebar-logo-big" alt="Logo VetCare">
+        <img src="{% static 'img/veterios_miniwiii.png' %}" 
+             alt="Logo Veterios" 
+             class="sidebar-logo-big">
     </div>
 
+    
     <nav class="sidebar-nav">
-        {# Capturamos el nombre de la ruta actual para manejar los estados activos #}
         {% with url_name=request.resolver_match.url_name %}
 
-        <a href="{% url 'cliente_inicio' %}" class="nav-item {% if url_name == 'cliente_inicio' %}active{% endif %}">
+        <a href="{% url 'inicio_cliente' %}" class="nav-item {% if url_name == 'inicio_cliente' %}active{% endif %}">
             <div class="active-indicator"></div>
             <i class="bi bi-house-door-fill fs-4"></i>
             <span class="nav-text ms-3">Inicio</span>

@@ -1,77 +1,162 @@
-{% extends 'appvet/shared/base.html' %}
+{% extends 'appvet/shared/base_cliente.html' %}
 {% load static %}
 
 {% block title %}Mis Mascotas{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{% static 'css/ver-todas-mismascotas.css' %}">
+<style>
+    /* Estilos estructurales aislados para evitar colisiones con el CSS viejo */
+    .mismascotas-layout-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .tarjeta-mascota-premium {
+        flex: 1 1 calc(33.333% - 1rem);
+        min-width: 290px;
+        background-color: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .tarjeta-mascota-premium:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Bordes acentuados por especie */
+    .borde-perro { border-left: 6px solid #ff9f43 !important; }
+    .borde-gato { border-left: 6px solid #57c0c2 !important; }
+    .borde-loro { border-left: 6px solid #4caf50 !important; }
+    .borde-conejo { border-left: 6px solid #9c27b0 !important; }
+    .borde-default { border-left: 6px solid #7f8c8d !important; }
+
+    .circulo-emoji {
+        width: 65px;
+        height: 65px;
+        background-color: #f8fafc;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        flex-shrink: 0;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .info-contenedor {
+        margin-left: 1.25rem;
+        flex-grow: 1;
+    }
+
+    .badge-especie-turquesa {
+        background-color: #e0f4f6 !important;
+        color: #2c8a93 !important;
+        font-weight: bold;
+        font-size: 0.75rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 50px;
+        display: inline-block;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid page-container">
-    <div class="header-navigation-wrapper mb-5">
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-3">
-                <a href="{% url 'inicio_cliente' %}" class="btn-back-circle shadow-sm" title="Volver al inicio">
-                    <i class="bi bi-arrow-left"></i>
-                </a>
-                <div>
-                    <h1 class="page-title m-0">Mi Familia Animal</h1>
-                    <p class="text-muted m-0">Gestiona la información de todos tus compañeros.</p>
-                </div>
-            </div>
-            <a href="{% url 'agregar_mascota' %}" class="btn-add-primary">
-                <i class="bi bi-plus-circle-fill me-2"></i>Registrar Nueva
+<div class="container-fluid">
+    
+    <div class="d-flex align-items-center justify-content-between mb-5 w-100">
+        <div class="d-flex align-items-center gap-3">
+            <a href="{% url 'inicio_cliente' %}" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; color: #3e929a;" title="Volver al inicio">
+                <i class="bi bi-arrow-left fs-5"></i>
             </a>
+            <div>
+                <h1 class="m-0 fw-bold" style="color: #2c8a93; font-size: 1.8rem; font-family: sans-serif;">Mi Familia Animal</h1>
+                <p class="text-muted m-0" style="font-size: 0.95rem;">Gestiona la información de todos tus compañeros.</p>
+            </div>
         </div>
+        <a href="{% url 'agregar_mascota' %}" class="btn btn-naranja-figma px-4 py-2 fw-bold rounded-pill shadow-sm" style="background-color: #ff9f43; color: white; padding: 12px 28px !important; text-decoration: none; font-size: 0.95rem;">
+            <i class="bi bi-plus-circle-fill me-2"></i>Registrar Nueva
+        </a>
     </div>
 
     {% if mascotas %}
-        <div class="mascotas-grid">
+        <div class="mismascotas-layout-grid">
             {% for mascota in mascotas %}
-                {% if mascota.especie|lower == 'perro' %}
-                    {% setvar 'style-perro' as especie_class %}
-                    {% setvar '🐶' as emoji %}
-                {% elif mascota.especie|lower == 'gato' %}
-                    {% setvar 'style-gato' as especie_class %}
-                    {% setvar '🐱' as emoji %}
-                {% elif mascota.especie|lower == 'loro' %}
-                    {% setvar 'style-loro' as especie_class %}
-                    {% setvar '🦜' as emoji %}
-                {% elif mascota.especie|lower == 'conejo' %}
-                    {% setvar 'style-conejo' as especie_class %}
-                    {% setvar '🐰' as emoji %}
-                {% elif mascota.especie|lower == 'hamster' %}
-                    {% setvar 'style-hamster' as especie_class %}
-                    {% setvar '🐹' as emoji %}
-                {% else %}
-                    {% setvar 'style-default' as especie_class %}
-                    {% setvar '🐾' as emoji %}
-                {% endif %}
-
-                <div class="pet-card {{ especie_class }} shadow-sm">
-                    <div class="card-accent"></div>
-                    <div class="pet-card-content">
-                        <div class="pet-visual">
-                            <div class="emoji-wrapper">
-                                <span>{{ emoji }}</span>
+                
+                {# Inyección segura de variables de entorno por fila #}
+                {% if mascota.especie.lower == 'perro' %}
+                    {% with border_class="borde-perro" emoji="🐶" %}
+                        <div class="tarjeta-mascota-premium {{ border_class }} shadow-sm">
+                            <div class="circulo-emoji"><span>{{ emoji }}</span></div>
+                            <div class="info-contenedor">
+                                <h4 class="fw-bold text-dark mb-1" style="font-size: 1.25rem; margin: 0;">{{ mascota.nombre }}</h4>
+                                <span class="text-muted d-block mb-2" style="font-size: 0.9rem; font-weight: 500;">{{ mascota.raza }}</span>
+                                <span class="badge-especie-turquesa">{{ mascota.especie|title }}</span>
                             </div>
                         </div>
-                        <div class="pet-info">
-                            <h3 class="pet-name">{{ mascota.nombre }}</h3>
-                            <span class="pet-breed">{{ mascota.raza }}</span>
-                            <div class="pet-tag">{{ mascota.especie }}</div>
+                    {% endwith %}
+                {% elif mascota.especie.lower == 'gato' %}
+                    {% with border_class="borde-gato" emoji="🐱" %}
+                        <div class="tarjeta-mascota-premium {{ border_class }} shadow-sm">
+                            <div class="circulo-emoji"><span>{{ emoji }}</span></div>
+                            <div class="info-contenedor">
+                                <h4 class="fw-bold text-dark mb-1" style="font-size: 1.25rem; margin: 0;">{{ mascota.nombre }}</h4>
+                                <span class="text-muted d-block mb-2" style="font-size: 0.9rem; font-weight: 500;">{{ mascota.raza }}</span>
+                                <span class="badge-especie-turquesa">{{ mascota.especie|title }}</span>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    {% endwith %}
+                {% elif mascota.especie.lower == 'loro' %}
+                    {% with border_class="borde-loro" emoji="🦜" %}
+                        <div class="tarjeta-mascota-premium {{ border_class }} shadow-sm">
+                            <div class="circulo-emoji"><span>{{ emoji }}</span></div>
+                            <div class="info-contenedor">
+                                <h4 class="fw-bold text-dark mb-1" style="font-size: 1.25rem; margin: 0;">{{ mascota.nombre }}</h4>
+                                <span class="text-muted d-block mb-2" style="font-size: 0.9rem; font-weight: 500;">{{ mascota.raza }}</span>
+                                <span class="badge-especie-turquesa">{{ mascota.especie|title }}</span>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% elif mascota.especie.lower == 'conejo' %}
+                    {% with border_class="borde-conejo" emoji="🐰" %}
+                        <div class="tarjeta-mascota-premium {{ border_class }} shadow-sm">
+                            <div class="circulo-emoji"><span>{{ emoji }}</span></div>
+                            <div class="info-contenedor">
+                                <h4 class="fw-bold text-dark mb-1" style="font-size: 1.25rem; margin: 0;">{{ mascota.nombre }}</h4>
+                                <span class="text-muted d-block mb-2" style="font-size: 0.9rem; font-weight: 500;">{{ mascota.raza }}</span>
+                                <span class="badge-especie-turquesa">{{ mascota.especie|title }}</span>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% else %}
+                    {% with border_class="borde-default" emoji="🐾" %}
+                        <div class="tarjeta-mascota-premium {{ border_class }} shadow-sm">
+                            <div class="circulo-emoji"><span>{{ emoji }}</span></div>
+                            <div class="info-contenedor">
+                                <h4 class="fw-bold text-dark mb-1" style="font-size: 1.25rem; margin: 0;">{{ mascota.nombre }}</h4>
+                                <span class="text-muted d-block mb-2" style="font-size: 0.9rem; font-weight: 500;">{{ mascota.raza }}</span>
+                                <span class="badge-especie-turquesa">{{ mascota.especie|title }}</span>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% endif %}
+
             {% endfor %}
         </div>
     {% else %}
-        <div class="empty-state-wrapper shadow-sm">
-            <div class="empty-icon">🐾</div>
-            <h2>Aún no hay huellas aquí</h2>
-            <p>Registra a tu primera mascota para empezar a disfrutar de nuestros servicios.</p>
-            <a href="{% url 'agregar_mascota' %}" class="btn-add-primary mt-3">Registrar ahora</a>
+        <div class="text-center py-5 bg-white rounded-4 border shadow-sm">
+            <div class="display-1 text-muted mb-3">🐾</div>
+            <h2 class="fw-bold text-dark">Aún no hay huellas aquí</h2>
+            <p class="text-muted">Registra a tu primera mascota para empezar a disfrutar de nuestros servicios.</p>
+            <a href="{% url 'agregar_mascota' %}" class="btn btn-naranja-figma rounded-pill px-4 py-2 mt-3" style="background-color: #ff9f43; color: white; text-decoration: none; font-weight: bold;">Registrar ahora</a>
         </div>
     {% endif %}
 </div>

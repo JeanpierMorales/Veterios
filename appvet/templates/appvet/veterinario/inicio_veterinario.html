@@ -1,4 +1,4 @@
-{% extends "appvet/layout_veterinario.html" %}
+{% extends "appvet/shared/base_veterinario.html" %}
 
 {% block title %}Agenda - {{ vista }}{% endblock %}
 
@@ -89,4 +89,55 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade text-dark" id="modalAtencion" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalAtencionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white py-3">
+                <h5 class="modal-title fw-bold" id="modalAtencionLabel">
+                    <i class="bi bi-stethoscope text-info me-2"></i> Registrar Atención: <span id="lblMascota" class="text-info"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formFinalizar" method="POST" action="">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary"><i class="bi bi-file-earmark-medical me-1"></i>Diagnóstico Clínico</label>
+                        <textarea name="diagnostico" class="form-control rounded-3" rows="3" placeholder="Escribe los síntomas y diagnóstico del paciente..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary"><i class="bi bi-capsule me-1"></i>Tratamiento / Receta</label>
+                        <textarea name="tratamiento" class="form-control rounded-3" rows="3" placeholder="Detalla medicamentos, dosis y cuidados..." required></textarea>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold text-secondary"><i class="bi bi-calendar-plus me-1"></i>Próxima Cita Sugerida <small class="text-muted fw-normal">(Opcional)</small></label>
+                        <input type="date" name="proximaCitaSugerida" class="form-control rounded-3">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light p-3 border-top">
+                    <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success px-4 rounded-pill fw-bold"><i class="bi bi-check-circle me-1"></i> Guardar Historia Clínica</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function abrirAtencion(citaId, mascotaNombre) {
+        // 1. Modificar el título del modal con el nombre del paciente
+        document.getElementById('lblMascota').innerText = mascotaNombre;
+        
+        // 2. Construir la URL dinámica del Action usando el ID de la cita
+        let urlBase = "{% url 'finalizar_consulta' 0 %}".replace('0', citaId);
+        document.getElementById('formFinalizar').setAttribute('action', urlBase);
+        
+        // 3. Levantar el Modal usando la sintaxis oficial de Bootstrap 5
+        var miModal = new bootstrap.Modal(document.getElementById('modalAtencion'));
+        miModal.show();
+    }
+</script>
 {% endblock %}

@@ -1,10 +1,19 @@
+
+
+
+
 {% extends 'appvet/shared/base.html' %}
 {% load static %}
 {% block title %}Acceso - VETERIOS{% endblock %}
 
 {% block content %}
 
-<div class="login-wrapper">
+<div class="login-wrapper" id="loginWrapper"
+     {% if messages %}
+        {% for message in messages %}
+            {% if 'register' in message.tags %} data-registro-error="true" {% endif %}
+        {% endfor %}
+     {% endif %}>
     <div class="main-auth-container" id="container">
 
         {# FORMULARIO DE REGISTRO #}
@@ -132,11 +141,13 @@
         });
     }
 
-    // MANEJO DE ERRORES: Leemos el dato del Body (Cero errores de VS Code)
     document.addEventListener("DOMContentLoaded", function () {
-        const errorEnRegistro = document.body.getAttribute('data-registro-error') === 'true';
-        if (errorEnRegistro && container) {
-            container.classList.add("right-panel-active");
+        const loginWrapper = document.getElementById('loginWrapper');
+        if (loginWrapper) {
+            const errorEnRegistro = loginWrapper.getAttribute('data-registro-error') === 'true';
+            if (errorEnRegistro && container) {
+                container.classList.add("right-panel-active");
+            }
         }
     });
 </script>
